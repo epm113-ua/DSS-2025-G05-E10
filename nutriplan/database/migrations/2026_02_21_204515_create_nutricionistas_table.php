@@ -6,20 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('nutricionistas', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre_completo');
+            $table->string('especialidad');
+            $table->string('ciudad');
+            $table->decimal('valoracion_media', 3, 2)->default(0); // 0.00 - 9.99
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('nutricionistas');

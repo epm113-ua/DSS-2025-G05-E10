@@ -8,24 +8,24 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('pagos', function (Blueprint $table) {
+        Schema::create('plan_semanal', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('factura_id')
-                ->constrained('facturas')
+            $table->foreignId('cita_id')
+                ->constrained('citas')
                 ->cascadeOnDelete();
 
-            $table->string('nombre_titular');
-            $table->dateTime('fecha_pago');
+            $table->date('semanal_inicio');
+            $table->string('notas')->nullable();
 
             $table->timestamps();
 
-            $table->index(['factura_id', 'fecha_pago']);
+            $table->index(['cita_id', 'semanal_inicio']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('pagos');
+        Schema::dropIfExists('plan_semanal');
     }
 };

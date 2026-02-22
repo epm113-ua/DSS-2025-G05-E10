@@ -6,20 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('item_plans', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('plan_semanal_id')
+                ->constrained('plan_semanal')
+                ->cascadeOnDelete();
+
+            $table->unsignedTinyInteger('dia_semana')->comment('1..7');
+            $table->string('tipo_comida');
+            $table->string('notas')->nullable();
+
             $table->timestamps();
+
+            // Evita duplicados del tipo: mismo plan, mismo día, misma comida
+            $table->unique(['plan_semanal_id', 'dia_semana', 'tipo_comida']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('item_plans');

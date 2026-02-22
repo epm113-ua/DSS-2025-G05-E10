@@ -2,16 +2,28 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
+        $this->call([
+            TiendaSeeder::class,
+            NutricionistaSeeder::class,
+            PacienteSeeder::class,
+            IngredienteSeeder::class,
+            RecetaSeeder::class,
+            IngredienteRecetaSeeder::class, // pivot (crear)
+            OfertaIngredienteSeeder::class,
+            CitaSeeder::class,
+            PlanSemanalSeeder::class,
+            ItemPlanSeeder::class,          // crear
+            MedicionSeeder::class,
+            FacturaSeeder::class,
+            PagoSeeder::class,
+            ConversacionSeeder::class,
+            MensajeSeeder::class,
+        ]);
     }
 }
