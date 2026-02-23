@@ -2,22 +2,19 @@
 
 namespace Database\Factories;
 
+use App\Models\Nutricionista;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Paciente>
- */
 class PacienteFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'nutricionista_id' => Nutricionista::factory(),
+            'nombre_completo'  => fake()->name(),
+            'fecha_nacimiento' => fake()->date(),
+            'ciudad'           => fake()->city(),
+            'objetivos'        => fake()->sentence(),
         ];
     }
 }

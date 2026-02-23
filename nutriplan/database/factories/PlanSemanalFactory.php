@@ -2,22 +2,17 @@
 
 namespace Database\Factories;
 
+use App\Models\Cita;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PlanSemanal>
- */
 class PlanSemanalFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'cita_id'       => Cita::factory(),
+            'semana_inicio' => fake()->date(),
+            'notas'         => fake()->sentence(),
         ];
     }
 }

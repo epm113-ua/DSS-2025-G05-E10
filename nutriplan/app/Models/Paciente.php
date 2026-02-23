@@ -2,9 +2,37 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Paciente extends Model
 {
-    //
+    use HasFactory;
+
+    protected $fillable = ['nutricionista_id', 'nombre_completo', 'fecha_nacimiento', 'ciudad', 'objetivos'];
+
+    public function nutricionista()
+    {
+        return $this->belongsTo(Nutricionista::class);
+    }
+
+    public function mediciones()
+    {
+        return $this->hasMany(Medicion::class);
+    }
+
+    public function citas()
+    {
+        return $this->hasMany(Cita::class);
+    }
+
+    public function conversaciones()
+    {
+        return $this->hasMany(Conversacion::class);
+    }
+
+    public function facturas()
+    {
+        return $this->hasMany(Factura::class);
+    }
 }

@@ -4,22 +4,18 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('facturas', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('paciente_id')->constrained('pacientes')->cascadeOnDelete();
+            $table->string('numero_factura')->unique();
+            $table->dateTime('pagado_en')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('facturas');

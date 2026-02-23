@@ -2,22 +2,17 @@
 
 namespace Database\Factories;
 
+use App\Models\Paciente;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Factura>
- */
 class FacturaFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'paciente_id'    => Paciente::factory(),
+            'numero_factura' => fake()->unique()->numerify('FAC-#####'),
+            'pagado_en'      => null,
         ];
     }
 }

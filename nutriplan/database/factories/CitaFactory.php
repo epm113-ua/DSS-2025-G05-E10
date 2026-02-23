@@ -2,22 +2,23 @@
 
 namespace Database\Factories;
 
+use App\Models\Nutricionista;
+use App\Models\Paciente;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Cita>
- */
 class CitaFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
+        $inicio = fake()->dateTimeBetween('-1 month', '+1 month');
+        $fin = (clone $inicio)->modify('+1 hour');
         return [
-            //
+            'nutricionista_id' => Nutricionista::factory(),
+            'paciente_id'      => Paciente::factory(),
+            'inicio'           => $inicio,
+            'fin'              => $fin,
+            'estado'           => fake()->randomElement(['pendiente', 'completada', 'cancelada']),
+            'motivo'           => fake()->sentence(),
         ];
     }
 }
