@@ -2,22 +2,22 @@
 
 namespace Database\Factories;
 
+use App\Models\Paciente;
+use App\Models\Nutricionista;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Paciente>
- */
 class PacienteFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Paciente::class;
+
     public function definition(): array
     {
         return [
-            //
+            'nutricionista_id' => Nutricionista::factory(),
+            'nombre_completo' => $this->faker->name(),
+            'fecha_nacimiento' => $this->faker->dateTimeBetween('-65 years', '-18 years')->format('Y-m-d'),
+            'ciudad' => $this->faker->city(),
+            'objetivos' => $this->faker->sentence(10),
         ];
     }
 }

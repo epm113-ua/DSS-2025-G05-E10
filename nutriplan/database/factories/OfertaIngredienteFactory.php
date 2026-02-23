@@ -2,22 +2,22 @@
 
 namespace Database\Factories;
 
+use App\Models\OfertaIngrediente;
+use App\Models\Tienda;
+use App\Models\Ingrediente;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\OfertaIngrediente>
- */
 class OfertaIngredienteFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = OfertaIngrediente::class;
+
     public function definition(): array
     {
         return [
-            //
+            'tienda_id' => Tienda::factory(),
+            'ingrediente_id' => Ingrediente::factory(),
+            'nombre' => 'Oferta ' . $this->faker->numberBetween(10, 60) . '%',
+            'descripcion_oferta' => $this->faker->sentence(8),
         ];
     }
 }

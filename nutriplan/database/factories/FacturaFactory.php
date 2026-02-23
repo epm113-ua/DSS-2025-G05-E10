@@ -2,22 +2,18 @@
 
 namespace Database\Factories;
 
+use App\Models\Factura;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Factura>
- */
 class FacturaFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Factura::class;
+
     public function definition(): array
     {
         return [
-            //
+            'numero_factura' => 'F-' . $this->faker->unique()->numerify('########'),
+            'pagado_en' => $this->faker->optional()->dateTimeBetween('-60 days', 'now'),
         ];
     }
 }

@@ -2,22 +2,20 @@
 
 namespace Database\Factories;
 
+use App\Models\Nutricionista;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Nutricionista>
- */
 class NutricionistaFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = Nutricionista::class;
+
     public function definition(): array
     {
         return [
-            //
+            'nombre_completo' => $this->faker->name(),
+            'especialidad' => $this->faker->randomElement(['Deportiva','Clínica','Vegetariana','Pérdida de peso']),
+            'ciudad' => $this->faker->city(),
+            'valoracion_media' => $this->faker->randomFloat(1, 3, 5),
         ];
     }
 }

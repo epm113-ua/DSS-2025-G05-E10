@@ -2,22 +2,20 @@
 
 namespace Database\Factories;
 
+use App\Models\PlanSemanal;
+use App\Models\Cita;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PlanSemanal>
- */
 class PlanSemanalFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = PlanSemanal::class;
+
     public function definition(): array
     {
         return [
-            //
+            'cita_id' => Cita::factory(),
+            'semanal_inicio' => $this->faker->dateTimeBetween('-8 weeks', '+8 weeks')->format('Y-m-d'),
+            'notas' => $this->faker->optional()->sentence(8),
         ];
     }
 }
