@@ -1,0 +1,85 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#6492
+    [34mall[39m: [
+      [34;4mApp\Models\Ingrediente[39;24m {#6455
+        [34mid[39m: [35m1[39m,
+        [34mnombre[39m: "[32mAvena[39m",
+        [34mcreated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mupdated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#5353
+          [34mreceta_id[39m: [35m1[39m,
+          [34mingrediente_id[39m: [35m1[39m,
+        },
+      },
+      [34;4mApp\Models\Ingrediente[39;24m {#6454
+        [34mid[39m: [35m4[39m,
+        [34mnombre[39m: "[32mSalmón[39m",
+        [34mcreated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mupdated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#6499
+          [34mreceta_id[39m: [35m1[39m,
+          [34mingrediente_id[39m: [35m4[39m,
+        },
+      },
+      [34;4mApp\Models\Ingrediente[39;24m {#6453
+        [34mid[39m: [35m6[39m,
+        [34mnombre[39m: "[32mLentejas[39m",
+        [34mcreated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mupdated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#6498
+          [34mreceta_id[39m: [35m1[39m,
+          [34mingrediente_id[39m: [35m6[39m,
+        },
+      },
+      [34;4mApp\Models\Ingrediente[39;24m {#6452
+        [34mid[39m: [35m7[39m,
+        [34mnombre[39m: "[32mTomate[39m",
+        [34mcreated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mupdated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#6496
+          [34mreceta_id[39m: [35m1[39m,
+          [34mingrediente_id[39m: [35m7[39m,
+        },
+      },
+      [34;4mApp\Models\Ingrediente[39;24m {#6451
+        [34mid[39m: [35m8[39m,
+        [34mnombre[39m: "[32mEspinacas[39m",
+        [34mcreated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mupdated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#6497
+          [34mreceta_id[39m: [35m1[39m,
+          [34mingrediente_id[39m: [35m8[39m,
+        },
+      },
+      [34;4mApp\Models\Ingrediente[39;24m {#6450
+        [34mid[39m: [35m10[39m,
+        [34mnombre[39m: "[32mManzana[39m",
+        [34mcreated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mupdated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#6495
+          [34mreceta_id[39m: [35m1[39m,
+          [34mingrediente_id[39m: [35m10[39m,
+        },
+      },
+      [34;4mApp\Models\Ingrediente[39;24m {#6449
+        [34mid[39m: [35m12[39m,
+        [34mnombre[39m: "[32mHuevos[39m",
+        [34mcreated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mupdated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#6494
+          [34mreceta_id[39m: [35m1[39m,
+          [34mingrediente_id[39m: [35m12[39m,
+        },
+      },
+      [34;4mApp\Models\Ingrediente[39;24m {#6448
+        [34mid[39m: [35m20[39m,
+        [34mnombre[39m: "[32mQueso fresco[39m",
+        [34mcreated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mupdated_at[39m: "[32m2026-02-22 01:56:37[39m",
+        [34mpivot[39m: [34;4mIlluminate\Database\Eloquent\Relations\Pivot[39;24m {#6493
+          [34mreceta_id[39m: [35m1[39m,
+          [34mingrediente_id[39m: [35m20[39m,
+        },
+      },
+    ],
+  }
+
