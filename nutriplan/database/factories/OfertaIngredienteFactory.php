@@ -11,10 +11,10 @@ class OfertaIngredienteFactory extends Factory
     public function definition(): array
     {
         return [
-            'ingrediente_id'    => Ingrediente::factory(),
-            'tienda_id'         => Tienda::factory(),
-            'nombre'            => fake()->words(2, true),
-            'descripcion_oferta'=> fake()->sentence(),
+            'ingrediente_id' => Ingrediente::factory(),
+            'tienda_id' => Tienda::factory(),
+            'nombre' => fake()->words(2, true),
+            'descripcion_oferta' => fake()->sentence(),
         ];
     }
 }

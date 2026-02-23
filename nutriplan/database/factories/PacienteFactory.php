@@ -11,10 +11,10 @@ class PacienteFactory extends Factory
     {
         return [
             'nutricionista_id' => Nutricionista::factory(),
-            'nombre_completo'  => fake()->name(),
+            'nombre_completo' => fake()->name(),
             'fecha_nacimiento' => fake()->date(),
-            'ciudad'           => fake()->city(),
-            'objetivos'        => fake()->sentence(),
+            'ciudad' => fake()->city(),
+            'objetivos' => fake()->sentence(),
         ];
     }
 }

@@ -25,7 +25,7 @@ class MensajeSeeder extends Seeder
         foreach ($conversaciones as $convId) {
             $num = rand(3, 10);
             for ($i = 0; $i < $num; $i++) {
-                $vinculaFactura = (!empty($facturas) && rand(0, 4) === 0); // ~20% con factura
+                $vinculaFactura = (!empty($facturas) && rand(0, 4) === 0); 
                 DB::table('mensajes')->insert([
                     'conversacion_id' => $convId,
                     'contenido' => $frases[array_rand($frases)],

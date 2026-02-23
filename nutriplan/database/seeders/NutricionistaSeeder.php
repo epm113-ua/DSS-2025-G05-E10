@@ -20,7 +20,7 @@ class NutricionistaSeeder extends Seeder
 
         foreach ($data as $i => $n) {
             DB::table('nutricionistas')->insert([
-                // quita tienda_id si no existe en tu BD
+                //Quita el tienda_id si no existe en la BD
 
                 'nombre_completo' => $n['nombre_completo'],
                 'especialidad' => $n['especialidad'],

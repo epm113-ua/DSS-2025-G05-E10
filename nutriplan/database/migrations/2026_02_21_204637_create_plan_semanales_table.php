@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        // Tabla: plan_semanales (plural de PlanSemanal)
         Schema::create('plan_semanales', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cita_id')->constrained('citas')->cascadeOnDelete();

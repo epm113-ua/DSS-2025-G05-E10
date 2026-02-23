@@ -11,12 +11,12 @@ class RecetaFactory extends Factory
     {
         return [
             'nutricionista_id' => Nutricionista::factory(),
-            'nombre'           => fake()->words(3, true),
-            'preparacion'      => fake()->paragraph(),
-            'calorias_kcal'    => fake()->numberBetween(100, 800),
-            'carbohidratos_g'  => fake()->randomFloat(2, 0, 100),
-            'grasas_g'         => fake()->randomFloat(2, 0, 50),
-            'ruta_foto'        => null,
+            'nombre' => fake()->words(3, true),
+            'preparacion' => fake()->paragraph(),
+            'calorias_kcal' => fake()->numberBetween(100, 800),
+            'carbohidratos_g' => fake()->randomFloat(2, 0, 100),
+            'grasas_g' => fake()->randomFloat(2, 0, 50),
+            'ruta_foto' => null,
         ];
     }
 }

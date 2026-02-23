@@ -13,13 +13,13 @@ class ConversacionFactory extends Factory
     {
         $cita = Cita::factory()->create();
         return [
-            'paciente_id'      => $cita->paciente_id,
+            'paciente_id' => $cita->paciente_id,
             'nutricionista_id' => $cita->nutricionista_id,
-            'cita_id'          => $cita->id,
-            'colaboracion'     => fake()->word(),
-            'porcentaje'       => fake()->numberBetween(0, 100),
-            'mensaje_resumen'  => fake()->sentence(),
-            'creado_en'        => now(),
+            'cita_id' => $cita->id,
+            'colaboracion' => fake()->word(),
+            'porcentaje' => fake()->numberBetween(0, 100),
+            'mensaje_resumen' => fake()->sentence(),
+            'creado_en' => now(),
         ];
     }
 }

@@ -13,7 +13,7 @@ class PagoSeeder extends Seeder
         if (empty($facturas)) return;
 
         foreach ($facturas as $facturaId) {
-            $num = rand(1, 2); // 1..* pagos por factura
+            $num = rand(1, 2); //De 1 a muchos pagos por factura
             for ($i = 0; $i < $num; $i++) {
                 DB::table('pagos')->insert([
                     'factura_id' => $facturaId,

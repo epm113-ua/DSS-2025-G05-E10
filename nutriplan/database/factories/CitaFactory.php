@@ -14,11 +14,11 @@ class CitaFactory extends Factory
         $fin = (clone $inicio)->modify('+1 hour');
         return [
             'nutricionista_id' => Nutricionista::factory(),
-            'paciente_id'      => Paciente::factory(),
-            'inicio'           => $inicio,
-            'fin'              => $fin,
-            'estado'           => fake()->randomElement(['pendiente', 'completada', 'cancelada']),
-            'motivo'           => fake()->sentence(),
+            'paciente_id' => Paciente::factory(),
+            'inicio' => $inicio,
+            'fin' => $fin,
+            'estado' => fake()->randomElement(['pendiente', 'completada', 'cancelada']),
+            'motivo' => fake()->sentence(),
         ];
     }
 }

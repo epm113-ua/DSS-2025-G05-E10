@@ -11,7 +11,7 @@ class IngredienteFactory extends Factory
     {
         return [
             'tienda_id' => Tienda::factory(),
-            'nombre'    => fake()->word(),
+            'nombre' => fake()->word(),
         ];
     }
 }

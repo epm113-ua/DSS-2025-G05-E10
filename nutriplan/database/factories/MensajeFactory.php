@@ -11,9 +11,9 @@ class MensajeFactory extends Factory
     {
         return [
             'conversacion_id' => Conversacion::factory(),
-            'factura_id'      => null,
-            'contenido'       => fake()->sentence(),
-            'enviado_en'      => now(),
+            'factura_id' => null,
+            'contenido' => fake()->sentence(),
+            'enviado_en' => now(),
         ];
     }
 

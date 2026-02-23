@@ -10,9 +10,9 @@ class PlanSemanalFactory extends Factory
     public function definition(): array
     {
         return [
-            'cita_id'       => Cita::factory(),
+            'cita_id' => Cita::factory(),
             'semana_inicio' => fake()->date(),
-            'notas'         => fake()->sentence(),
+            'notas' => fake()->sentence(),
         ];
     }
 }

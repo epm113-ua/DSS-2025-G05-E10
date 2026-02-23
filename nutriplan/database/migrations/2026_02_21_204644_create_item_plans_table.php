@@ -11,8 +11,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('plan_semanal_id')->constrained('plan_semanales')->cascadeOnDelete();
             $table->foreignId('receta_id')->constrained('recetas')->cascadeOnDelete();
-            $table->tinyInteger('dia_semana'); // 1=Lunes ... 7=Domingo
-            $table->string('tipo_comida');     // desayuno, almuerzo, cena, etc.
+            $table->tinyInteger('dia_semana'); //1=Lunes ... 7=Domingo
+            $table->string('tipo_comida');     //Desayuno, almuerzo, cena...
             $table->string('notas')->nullable();
             $table->timestamps();
         });

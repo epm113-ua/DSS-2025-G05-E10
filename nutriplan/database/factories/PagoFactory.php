@@ -10,9 +10,9 @@ class PagoFactory extends Factory
     public function definition(): array
     {
         return [
-            'factura_id'    => Factura::factory(),
-            'nombre_titular'=> fake()->name(),
-            'fecha_pago'    => now(),
+            'factura_id' => Factura::factory(),
+            'nombre_titular' => fake()->name(),
+            'fecha_pago' => now(),
         ];
     }
 }

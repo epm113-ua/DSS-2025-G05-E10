@@ -15,17 +15,17 @@ class ItemPlanFactory extends Factory
     {
         return [
             'plan_semanal_id' => PlanSemanal::factory(),
-            'receta_id'       => Receta::factory(),
-            'dia_semana'      => $this->dia,
-            'tipo_comida'     => $this->tipo,
-            'notas'           => null,
+            'receta_id' => Receta::factory(),
+            'dia_semana' => $this->dia,
+            'tipo_comida' => $this->tipo,
+            'notas' => null,
         ];
     }
 
     public function slot(int $dia, string $tipo): static
     {
         return $this->state(fn (array $attributes) => [
-            'dia_semana'  => $dia,
+            'dia_semana' => $dia,
             'tipo_comida' => $tipo,
         ]);
     }

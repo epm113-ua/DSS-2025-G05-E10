@@ -16,7 +16,7 @@ class ItemPlanSeeder extends Seeder
 
         foreach ($planes as $planId) {
 
-            // Generamos todas las combinaciones posibles (7 días x 4 tipos = 28)
+            //Generamos todas las combinaciones posibles
             $combinaciones = [];
             for ($dia = 1; $dia <= 7; $dia++) {
                 foreach ($tipos as $tipo) {
@@ -24,10 +24,10 @@ class ItemPlanSeeder extends Seeder
                 }
             }
 
-            // Barajamos para que sea aleatorio
+            //Barajamos para que sea aleatorio
             shuffle($combinaciones);
 
-            // Elegimos cuántos items crear (máx 28 para no violar el UNIQUE)
+            //Elegimos cuántos items crear
             $items = rand(7, 21);
             $items = min($items, count($combinaciones));
 

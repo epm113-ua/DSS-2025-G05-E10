@@ -19,7 +19,7 @@ class IngredienteRecetaSeeder extends Seeder
             $seleccion = collect($ingredientes)->shuffle()->take($num);
 
             foreach ($seleccion as $ingId) {
-                // evita duplicados si no tienes PK/unique en pivot
+                //Evitamos duplicados si no tenemos PK/unique en pivot
                 DB::table('ingrediente_receta')->updateOrInsert([
                     'ingrediente_id' => $ingId,
                     'receta_id' => $recetaId,

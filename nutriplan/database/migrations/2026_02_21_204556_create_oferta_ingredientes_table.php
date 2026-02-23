@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        // Nombre de tabla: oferta_ingredientes (plural de OfertaIngrediente)
         Schema::create('oferta_ingredientes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ingrediente_id')->constrained('ingredientes')->cascadeOnDelete();

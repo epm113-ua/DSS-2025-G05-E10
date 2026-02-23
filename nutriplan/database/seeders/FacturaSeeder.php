@@ -9,7 +9,7 @@ class FacturaSeeder extends Seeder
 {
     public function run(): void
     {
-        // Creamos entre 8 y 15 facturas
+        //Creamos entre 8 y 15 facturas 
         $cantidad = rand(8, 15);
 
         for ($i = 1; $i <= $cantidad; $i++) {
