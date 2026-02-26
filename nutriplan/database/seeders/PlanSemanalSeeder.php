@@ -15,9 +15,9 @@ class PlanSemanalSeeder extends Seeder
         foreach ($citas as $citaId) {
             $num = rand(0, 2);
             for ($i = 0; $i < $num; $i++) {
-                DB::table('plan_semanal')->insert([
+                DB::table('plan_semanales')->insert([
                     'cita_id' => $citaId,
-                    'semanal_inicio' => now()->startOfWeek()->addWeeks(rand(-2, 2))->toDateString(),
+                    'semana_inicio' => now()->startOfWeek()->addWeeks(rand(-2, 2))->toDateString(),
                     'notas' => 'Plan semanal generado para la cita ' . $citaId,
                     'created_at' => now(),
                     'updated_at' => now(),

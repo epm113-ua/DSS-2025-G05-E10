@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->foreignId('cita_id')->constrained('citas')->cascadeOnDelete();
             $table->string('colaboracion');
             $table->integer('porcentaje');
-            $table->string('mensaje_resumen');
+            $table->string('mensaje_resumen')->nullable();
             $table->dateTime('creado_en');
             $table->timestamps();
         });

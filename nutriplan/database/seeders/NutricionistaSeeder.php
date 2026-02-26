@@ -13,15 +13,14 @@ class NutricionistaSeeder extends Seeder
 
         $data = [
             ['nombre_completo' => 'Laura Sánchez', 'especialidad' => 'Deportiva', 'ciudad' => 'Madrid', 'valoracion_media' => 4.6],
-            ['nombre_completo' => 'Carlos Pérez', 'especialidad' => 'Clínica',   'ciudad' => 'Valencia', 'valoracion_media' => 4.2],
-            ['nombre_completo' => 'Marta Ruiz',    'especialidad' => 'Vegetariana', 'ciudad' => 'Sevilla', 'valoracion_media' => 4.8],
-            ['nombre_completo' => 'Diego Martín',  'especialidad' => 'Pérdida de peso', 'ciudad' => 'Bilbao', 'valoracion_media' => 4.1],
+            ['nombre_completo' => 'Carlos Pérez', 'especialidad' => 'Clínica', 'ciudad' => 'Valencia', 'valoracion_media' => 4.2],
+            ['nombre_completo' => 'Marta Ruiz', 'especialidad' => 'Vegetariana', 'ciudad' => 'Sevilla', 'valoracion_media' => 4.8],
+            ['nombre_completo' => 'Diego Martín', 'especialidad' => 'Pérdida de peso', 'ciudad' => 'Bilbao', 'valoracion_media' => 4.1],
         ];
 
         foreach ($data as $i => $n) {
             DB::table('nutricionistas')->insert([
-                //Quita el tienda_id si no existe en la BD
-
+                'tienda_id' => $tiendas[$i % count($tiendas)],
                 'nombre_completo' => $n['nombre_completo'],
                 'especialidad' => $n['especialidad'],
                 'ciudad' => $n['ciudad'],

@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->date('fecha_medicion');
             $table->decimal('peso_kg', 5, 2);
             $table->integer('altura_cm');
-            $table->decimal('porcentaje_grasa', 5, 2);
+            $table->decimal('porcentaje_grasa', 5, 2)->nullable();
             $table->timestamps();
         });
     }

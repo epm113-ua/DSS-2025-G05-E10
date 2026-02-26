@@ -16,9 +16,17 @@ class ConversacionSeeder extends Seeder
         foreach ($pacientes as $p) {
             $num = rand(0, 2);
             for ($i = 0; $i < $num; $i++) {
+                $cita = DB::table('citas')
+                    ->where('paciente_id', $p->id)
+                    ->inRandomOrder()
+                    ->first();
+
+                if (!$cita) continue;
+
                 DB::table('conversaciones')->insert([
                     'paciente_id' => $p->id,
                     'nutricionista_id' => $p->nutricionista_id,
+                    'cita_id' => $cita->id,
                     'colaboracion' => $colabs[array_rand($colabs)],
                     'porcentaje' => rand(0, 100),
                     'mensaje_resumen' => (rand(0, 1) === 1) ? 'Resumen automático de la conversación' : null,

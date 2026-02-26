@@ -9,8 +9,9 @@ class ItemPlanSeeder extends Seeder
 {
     public function run(): void
     {
-        $planes = DB::table('plan_semanal')->pluck('id')->all();
-        if (empty($planes)) return;
+        $planes = DB::table('plan_semanales')->pluck('id')->all();
+        $recetas = DB::table('recetas')->pluck('id')->all();
+        if (empty($planes) || empty($recetas)) return;
 
         $tipos = ['BREAKFAST', 'LUNCH', 'SNACK', 'DINNER'];
 
@@ -36,6 +37,7 @@ class ItemPlanSeeder extends Seeder
 
                 DB::table('item_plans')->insert([
                     'plan_semanal_id' => $planId,
+                    'receta_id' => $recetas[array_rand($recetas)],
                     'dia_semana' => $dia,
                     'tipo_comida' => $tipo,
                     'notas' => (rand(0, 3) === 0) ? 'Ajustar raciones según objetivo' : null,

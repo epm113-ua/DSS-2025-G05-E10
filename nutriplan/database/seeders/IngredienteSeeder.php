@@ -18,6 +18,7 @@ class IngredienteSeeder extends Seeder
 
         foreach ($ingredientes as $i => $nombre) {
             DB::table('ingredientes')->insert([
+                'tienda_id' => $tiendas[$i % count($tiendas)],
                 'nombre' => $nombre,
                 'created_at' => now(),
                 'updated_at' => now(),
