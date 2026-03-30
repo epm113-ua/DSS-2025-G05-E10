@@ -1,28 +1,16 @@
 <?php
-
 namespace Database\Seeders;
 
+use App\Models\Factura;
+use App\Models\Paciente;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class FacturaSeeder extends Seeder
 {
     public function run(): void
     {
-        $pacientes = DB::table('pacientes')->pluck('id')->all();
-        if (empty($pacientes)) return;
-
-        //Creamos entre 8 y 15 facturas 
-        $cantidad = rand(8, 15);
-
-        for ($i = 1; $i <= $cantidad; $i++) {
-            DB::table('facturas')->insert([
-                'paciente_id' => $pacientes[array_rand($pacientes)],
-                'numero_factura' => 'F-' . now()->format('Ymd') . '-' . str_pad((string)$i, 4, '0', STR_PAD_LEFT),
-                'pagado_en' => (rand(0, 1) === 1) ? now()->subDays(rand(0, 60)) : null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+        Paciente::all()->each(function (Paciente $paciente) {
+            Factura::factory()->count(rand(1, 2))->create(['paciente_id' => $paciente->id]);
+        });
     }
 }

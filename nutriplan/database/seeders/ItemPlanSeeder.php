@@ -1,50 +1,25 @@
 <?php
-
 namespace Database\Seeders;
 
+use App\Models\ItemPlan;
+use App\Models\PlanSemanal;
+use App\Models\Receta;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ItemPlanSeeder extends Seeder
 {
     public function run(): void
     {
-        $planes = DB::table('plan_semanales')->pluck('id')->all();
-        $recetas = DB::table('recetas')->pluck('id')->all();
-        if (empty($planes) || empty($recetas)) return;
-
         $tipos = ['BREAKFAST', 'LUNCH', 'SNACK', 'DINNER'];
-
-        foreach ($planes as $planId) {
-
-            //Generamos todas las combinaciones posibles
-            $combinaciones = [];
-            for ($dia = 1; $dia <= 7; $dia++) {
-                foreach ($tipos as $tipo) {
-                    $combinaciones[] = [$dia, $tipo];
-                }
-            }
-
-            //Barajamos para que sea aleatorio
-            shuffle($combinaciones);
-
-            //Elegimos cuántos items crear
-            $items = rand(7, 21);
-            $items = min($items, count($combinaciones));
-
-            for ($i = 0; $i < $items; $i++) {
-                [$dia, $tipo] = $combinaciones[$i];
-
-                DB::table('item_plans')->insert([
-                    'plan_semanal_id' => $planId,
-                    'receta_id' => $recetas[array_rand($recetas)],
-                    'dia_semana' => $dia,
-                    'tipo_comida' => $tipo,
-                    'notas' => (rand(0, 3) === 0) ? 'Ajustar raciones según objetivo' : null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+        PlanSemanal::all()->each(function (PlanSemanal $plan) use ($tipos) {
+            $recetaId = Receta::inRandomOrder()->first()->id;
+            foreach (range(1, 7) as $dia) {
+                $tipo = $tipos[array_rand($tipos)];
+                ItemPlan::factory()->slot($dia, $tipo)->create([
+                    'plan_semanal_id' => $plan->id,
+                    'receta_id'       => $recetaId,
                 ]);
             }
-        }
+        });
     }
 }

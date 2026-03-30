@@ -1,40 +1,22 @@
 <?php
-
 namespace Database\Seeders;
 
+use App\Models\Cita;
+use App\Models\Conversacion;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ConversacionSeeder extends Seeder
 {
     public function run(): void
     {
-        $pacientes = DB::table('pacientes')->get(['id', 'nutricionista_id']);
-        if ($pacientes->isEmpty()) return;
-
-        $colabs = ['Chat', 'Seguimiento', 'Consulta rápida'];
-        foreach ($pacientes as $p) {
-            $num = rand(0, 2);
-            for ($i = 0; $i < $num; $i++) {
-                $cita = DB::table('citas')
-                    ->where('paciente_id', $p->id)
-                    ->inRandomOrder()
-                    ->first();
-
-                if (!$cita) continue;
-
-                DB::table('conversaciones')->insert([
-                    'paciente_id' => $p->id,
-                    'nutricionista_id' => $p->nutricionista_id,
-                    'cita_id' => $cita->id,
-                    'colaboracion' => $colabs[array_rand($colabs)],
-                    'porcentaje' => rand(0, 100),
-                    'mensaje_resumen' => (rand(0, 1) === 1) ? 'Resumen automático de la conversación' : null,
-                    'creado_en' => now()->subDays(rand(0, 30)),
-                    'created_at' => now(),
-                    'updated_at' => now(),
+        Cita::all()->each(function (Cita $cita) {
+            if (rand(0, 1)) {
+                Conversacion::factory()->create([
+                    'cita_id'          => $cita->id,
+                    'paciente_id'      => $cita->paciente_id,
+                    'nutricionista_id' => $cita->nutricionista_id,
                 ]);
             }
-        }
+        });
     }
 }
