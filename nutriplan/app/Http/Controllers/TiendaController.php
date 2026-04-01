@@ -17,7 +17,8 @@ class TiendaController extends Controller
 
         $orden = $request->get('orden', 'nombre_tienda');
         $dir   = $request->get('dir', 'asc');
-        if (!in_array($orden, ['nombre_tienda'])) $orden = 'nombre_tienda';
+        $columnas = ['nombre_tienda', 'nutricionistas_count', 'ingredientes_count', 'ofertas_count'];
+        if (!in_array($orden, $columnas)) $orden = 'nombre_tienda';
 
         $tiendas = $query->orderBy($orden, $dir)->paginate(10)->withQueryString();
 

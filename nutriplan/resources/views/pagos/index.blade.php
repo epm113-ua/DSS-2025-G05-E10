@@ -64,8 +64,7 @@
         </table>
     </div>
 </div>
-<div class="mt-3 d-flex justify-content-between align-items-center">
-    <small class="text-muted">{{ $pagos->total() }} resultado(s)</small>
+<div class="mt-3">
     {{ $pagos->links() }}
 </div>
 @endsection

@@ -17,6 +17,8 @@
         <button type="submit" class="btn btn-outline-success"><i class="bi bi-search me-1"></i>Buscar</button>
         <a href="{{ route('tiendas.index') }}" class="btn btn-outline-secondary ms-1">Limpiar</a>
     </div>
+    <input type="hidden" name="orden" value="{{ $orden }}">
+    <input type="hidden" name="dir"   value="{{ $dir }}">
 </form>
 
 <div class="card shadow-sm">
@@ -24,10 +26,18 @@
         <table class="table table-hover mb-0">
             <thead class="table-success">
             <tr>
-                <th>Nombre</th>
-                <th>Nutricionistas</th>
-                <th>Ingredientes</th>
-                <th>Ofertas</th>
+                @php
+                    function colLink($campo, $label, $orden, $dir) {
+                        $nextDir = ($orden === $campo && $dir === 'asc') ? 'desc' : 'asc';
+                        $icon = $orden === $campo ? ($dir === 'asc' ? '↑' : '↓') : '';
+                        $url = request()->fullUrlWithQuery(['orden' => $campo, 'dir' => $nextDir]);
+                        return "<a href=\"{$url}\" class=\"text-dark text-decoration-none\">{$label} {$icon}</a>";
+                    }
+                @endphp
+                <th>{!! colLink('nombre_tienda', 'Nombre', $orden, $dir) !!}</th>
+                <th>{!! colLink('nutricionistas_count', 'Nutricionistas', $orden, $dir) !!}</th>
+                <th>{!! colLink('ingredientes_count', 'Ingredientes', $orden, $dir) !!}</th>
+                <th>{!! colLink('ofertas_count', 'Ofertas', $orden, $dir) !!}</th>
                 <th class="text-end">Acciones</th>
             </tr>
             </thead>
@@ -56,8 +66,7 @@
         </table>
     </div>
 </div>
-<div class="mt-3 d-flex justify-content-between align-items-center">
-    <small class="text-muted">{{ $tiendas->total() }} resultado(s)</small>
+<div class="mt-3">
     {{ $tiendas->links() }}
 </div>
 @endsection

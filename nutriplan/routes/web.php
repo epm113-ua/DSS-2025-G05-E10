@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\NutricionistaController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\CitaController;
@@ -16,10 +18,18 @@ use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\MensajeController;
 use App\Http\Controllers\PagoController;
 
-Route::get('/', function () {
-    return redirect()->route('nutricionistas.index');
+// Dashboard principal
+Route::get('/',              [DashboardController::class, 'index'])      ->name('dashboard');
+Route::post('/cambiar-modo', [DashboardController::class, 'cambiarModo'])->name('cambiar-modo');
+
+// Panel de administración
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/',         [AdminController::class, 'index'])    ->name('index');
+    Route::get('/usuarios', [AdminController::class, 'usuarios']) ->name('usuarios');
+    Route::post('/usuarios/{user}/toggle-admin', [AdminController::class, 'toggleAdmin'])->name('toggle-admin');
 });
 
+// Recursos del modelo de dominio
 Route::resource('nutricionistas',       NutricionistaController::class);
 Route::resource('pacientes',            PacienteController::class);
 Route::resource('citas',                CitaController::class);
