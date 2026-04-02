@@ -14,7 +14,6 @@
     </a>
 </div>
 
-{{-- Tarjetas resumen --}}
 <div class="row g-3 mb-4">
     @php
         $tarjetas = [
@@ -44,7 +43,6 @@
 </div>
 
 <div class="row g-4">
-    {{-- Gestión del sistema --}}
     <div class="col-lg-5">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-header bg-white fw-semibold">
@@ -85,7 +83,6 @@
         </div>
     </div>
 
-    {{-- Nutricionistas top + citas recientes --}}
     <div class="col-lg-7">
         <div class="card shadow-sm border-0 mb-3">
             <div class="card-header bg-white fw-semibold">

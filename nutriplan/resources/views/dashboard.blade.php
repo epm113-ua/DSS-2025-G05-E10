@@ -1,3 +1,7 @@
+@php
+    $esAdmin       = \App\Models\User::modoAdmin();
+    $usuarioActual = \App\Models\User::currentUser();
+@endphp
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,7 +37,8 @@
         .btn-card { border:1px solid #2c7a4b; color:#2c7a4b; background:#fff; border-radius:8px;
                     font-size:.88rem; padding:.4rem 1.2rem; margin-top:.5rem; text-decoration:none; }
         .btn-card:hover { background:#2c7a4b; color:#fff; }
-        .btn-role { border-radius:8px; font-size:.85rem; font-weight:600; padding:.45rem 1.1rem; text-decoration:none; }
+        .btn-role { border-radius:8px; font-size:.85rem; font-weight:600;
+                    padding:.45rem 1.1rem; text-decoration:none; border:none; cursor:pointer; }
         footer { border-top:1px solid #e0ebe0; padding:1.2rem 2rem; margin-top:3rem;
                  display:flex; justify-content:space-between; align-items:center;
                  font-size:.83rem; color:#6c757d; background:#fff; }
@@ -49,38 +54,20 @@
         <i class="bi bi-heart-pulse-fill"></i> NutriPlan
     </div>
     <div class="d-flex align-items-center gap-3">
-
-        {{-- Indicador de modo y botón cambio --}}
-        @if($esAdmin)
-            <span class="badge bg-warning text-dark px-3 py-2" style="font-size:.82rem;">
-                <i class="bi bi-shield-fill me-1"></i>Admin
-            </span>
-            {{-- Ir al panel admin --}}
-            <a href="{{ route('admin.index') }}" class="btn-role text-white"
-               style="background:linear-gradient(135deg,#ff6b35,#f7931e);">
-                <i class="bi bi-shield-lock-fill me-1"></i>Panel Admin
-            </a>
-            {{-- Cambiar a usuario --}}
-            <form action="{{ route('cambiar-modo') }}" method="POST" class="m-0">
-                @csrf
-                <button type="submit" class="btn-role btn" style="border:1px solid #adb5bd; background:#fff; color:#495057;">
-                    <i class="bi bi-person me-1"></i>Cambiar a Usuario
-                </button>
-            </form>
-        @else
-            <span class="badge bg-secondary px-3 py-2" style="font-size:.82rem;">
-                <i class="bi bi-person-fill me-1"></i>Usuario
-            </span>
-            {{-- Cambiar a admin --}}
-            <form action="{{ route('cambiar-modo') }}" method="POST" class="m-0">
-                @csrf
-                <button type="submit" class="btn-role btn text-white"
-                        style="background:linear-gradient(135deg,#ff6b35,#f7931e); border:none;">
-                    <i class="bi bi-shield-lock-fill me-1"></i>Cambiar a Admin
-                </button>
-            </form>
-        @endif
-
+        {{-- Botones según modo --}}
+        <span class="badge bg-warning text-dark px-3 py-2" style="font-size:.82rem;">
+            <i class="bi bi-shield-fill me-1"></i>Admin
+        </span>
+        <a href="{{ route('admin.index') }}" class="btn-role text-white"
+           style="background:linear-gradient(135deg,#ff6b35,#f7931e);">
+            <i class="bi bi-shield-lock-fill me-1"></i>Panel Admin
+        </a>
+        <form action="{{ route('cambiar-modo') }}" method="POST" class="m-0">
+            @csrf
+            <button type="submit" class="btn-role" style="border:1px solid #adb5bd; background:#fff; color:#495057;">
+                <i class="bi bi-person me-1"></i>Cambiar a Usuario
+            </button>
+        </form>
         <div class="user-pill">
             <div class="user-avatar">{{ strtoupper(substr($usuarioActual->name, 0, 2)) }}</div>
             <span style="font-size:.88rem; font-weight:500;">{{ Str::words($usuarioActual->name, 1, '.') }}</span>
@@ -96,7 +83,7 @@
 
 <div class="container" style="max-width:900px;">
 
-    {{-- 4 tarjetas principales (iguales para todos) --}}
+    {{-- 4 tarjetas --}}
     <div class="row g-4 justify-content-center">
         <div class="col-sm-6 col-lg-3">
             <div class="feature-card h-100">
@@ -127,17 +114,19 @@
                 <div class="icon-wrap"><i class="bi bi-bar-chart-line"></i></div>
                 <h5>Reportes</h5>
                 <p>Informes de progreso y estadísticas.</p>
-                @if($esAdmin)
-                    <a href="{{ route('admin.index') }}" class="btn-card">Ver Reportes</a>
-                @else
-                    <a href="{{ route('mediciones.index') }}" class="btn-card">Ver Mediciones</a>
-                @endif
+                <a href="{{ route('admin.index') }}" class="btn-card">Ver Reportes</a>
             </div>
         </div>
     </div>
 
-    {{-- Estadísticas: SOLO modo admin --}}
-    @if($esAdmin)
+    {{-- Estadísticas --}}
+    @php
+        $stats = [
+            'nutricionistas'      => \App\Models\Nutricionista::count(),
+            'pacientes'           => \App\Models\Paciente::count(),
+            'facturas_pendientes' => \App\Models\Factura::whereNull('pagado_en')->count(),
+        ];
+    @endphp
     <div class="row g-3 mt-4">
         <div class="col-4">
             <div class="card border-0 shadow-sm text-center py-3">
@@ -159,7 +148,11 @@
         </div>
     </div>
 
-    {{-- Tabla citas recientes: SOLO modo admin --}}
+    {{-- Citas recientes --}}
+    @php
+        $citasRecientes = \App\Models\Cita::with(['paciente','nutricionista'])
+            ->orderByDesc('inicio')->limit(5)->get();
+    @endphp
     <div class="card border-0 shadow-sm mt-4">
         <div class="card-header bg-white fw-semibold">
             <i class="bi bi-calendar-check me-2 text-success"></i>Citas recientes
@@ -188,11 +181,12 @@
             <a href="{{ route('citas.index') }}" class="btn btn-sm btn-outline-success">Ver todas las citas</a>
         </div>
     </div>
-    @endif
 
-    {{-- Accesos rápidos (iguales para todos) --}}
+    {{-- Accesos rápidos --}}
     <div class="mt-4 mb-2">
-        <h6 class="text-muted fw-semibold mb-3"><i class="bi bi-lightning-charge me-1 text-warning"></i>Accesos rápidos</h6>
+        <h6 class="text-muted fw-semibold mb-3">
+            <i class="bi bi-lightning-charge me-1 text-warning"></i>Accesos rápidos
+        </h6>
         <div class="d-flex flex-wrap gap-2">
             <a href="{{ route('nutricionistas.create') }}" class="btn btn-outline-success btn-sm">
                 <i class="bi bi-plus me-1"></i>Nuevo nutricionista
@@ -208,6 +202,7 @@
             </a>
         </div>
     </div>
+
 </div>
 
 <footer>

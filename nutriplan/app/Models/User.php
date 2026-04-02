@@ -18,21 +18,17 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-            'is_admin'          => 'boolean',
+            'password'  => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
 
-    /**
-     * Devuelve el usuario activo simulado.
-     * En la siguiente entrega se sustituirá por Auth::user().
-     */
     public static function currentUser(): self
     {
         return self::firstOrCreate(
             ['email' => 'admin@nutriplan.com'],
             [
-                'name'     => 'Administrador NutriPlan',
+                'name' => 'Administrador NutriPlan',
                 'password' => bcrypt('password'),
                 'is_admin' => true,
             ]
@@ -44,17 +40,11 @@ class User extends Authenticatable
         return (bool) $this->is_admin;
     }
 
-    /**
-     * Indica si el usuario está actuando en modo admin ahora mismo.
-     * Usa la sesión para permitir cambiar de rol sin autenticación real.
-     */
     public static function modoAdmin(): bool
     {
-        // Solo puede ser admin si el usuario tiene el flag is_admin
         if (!self::currentUser()->esAdmin()) {
             return false;
         }
-        // Por defecto, el admin empieza en modo admin
         return session('modo_admin', true);
     }
 }

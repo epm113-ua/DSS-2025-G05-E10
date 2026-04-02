@@ -9,7 +9,6 @@
     </a>
 </div>
 
-{{-- Buscador --}}
 <form method="GET" action="{{ route('nutricionistas.index') }}" class="row g-2 mb-4">
     <div class="col-md-5">
         <input type="text" name="buscar" class="form-control" placeholder="Buscar por nombre, especialidad o ciudad…"
@@ -74,6 +73,5 @@
 </div>
 
 <div class="mt-3">
-    {{ $nutricionistas->links() }}
 </div>
 @endsection

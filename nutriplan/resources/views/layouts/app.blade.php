@@ -20,62 +20,51 @@
 </head>
 <body>
 <div class="d-flex">
+    @php $esAdmin = \App\Models\User::modoAdmin(); @endphp
+
     <nav class="sidebar d-flex flex-column p-3" style="width:235px; min-width:235px;">
 
-        {{-- Logo --}}
-        <a href="{{ route('dashboard') }}" class="text-white fs-5 fw-bold mb-3 d-flex align-items-center gap-2">
+        <a href="{{ $esAdmin ? route('dashboard') : route('nutricionistas.index') }}"
+           class="text-white fs-5 fw-bold mb-3 d-flex align-items-center gap-2">
             <i class="bi bi-heart-pulse-fill text-success"></i> NutriPlan
         </a>
 
-        {{-- Indicador de modo + botón cambio --}}
-        @php $esAdmin = \App\Models\User::modoAdmin(); @endphp
-
-        <div class="mb-3">
-            @if($esAdmin)
-                {{-- Modo Admin: mostrar botón para cambiar a usuario --}}
-                <div class="d-flex align-items-center gap-2 mb-2 px-1">
-                    <span class="badge bg-warning text-dark w-100 py-2" style="font-size:.8rem;">
-                        <i class="bi bi-shield-fill me-1"></i> Modo Admin
-                    </span>
-                </div>
-                <form action="{{ route('cambiar-modo') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-sm w-100 text-white"
-                            style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); font-size:.82rem;">
-                        <i class="bi bi-person me-1"></i> Cambiar a Usuario
-                    </button>
-                </form>
-            @else
-                {{-- Modo Usuario: mostrar botón para volver a admin --}}
-                <div class="d-flex align-items-center gap-2 mb-2 px-1">
-                    <span class="badge bg-secondary w-100 py-2" style="font-size:.8rem;">
-                        <i class="bi bi-person-fill me-1"></i> Modo Usuario
-                    </span>
-                </div>
-                <form action="{{ route('cambiar-modo') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-sm w-100"
-                            style="background:linear-gradient(135deg,#ff6b35,#f7931e); border:none; color:#fff; font-size:.82rem;">
-                        <i class="bi bi-shield-lock-fill me-1"></i> Cambiar a Admin
-                    </button>
-                </form>
-            @endif
-        </div>
-
-        {{-- Enlace a Panel Admin (solo visible en modo admin) --}}
         @if($esAdmin)
+            <span class="badge bg-warning text-dark w-100 py-2 mb-2" style="font-size:.8rem;">
+                <i class="bi bi-shield-fill me-1"></i> Modo Admin
+            </span>
+            <form action="{{ route('cambiar-modo') }}" method="POST" class="mb-2">
+                @csrf
+                <button type="submit" class="btn btn-sm w-100 text-white"
+                        style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); font-size:.82rem;">
+                    <i class="bi bi-person me-1"></i> Cambiar a Usuario
+                </button>
+            </form>
             <a href="{{ route('admin.index') }}"
                class="btn btn-sm mb-3 w-100 d-flex align-items-center justify-content-center gap-2"
                style="background:linear-gradient(135deg,#ff6b35,#f7931e); border:none; color:#fff;">
                 <i class="bi bi-shield-lock-fill"></i> Panel Admin
             </a>
+
+            <hr class="border-success my-1">
+
+            <a class="nav-link @if(request()->routeIs('dashboard')) active @endif" href="{{ route('dashboard') }}">
+                <i class="bi bi-house me-1"></i> Dashboard
+            </a>
+
+        @else
+            <span class="badge bg-secondary w-100 py-2 mb-2" style="font-size:.8rem;">
+                <i class="bi bi-person-fill me-1"></i> Modo Usuario
+            </span>
+            <form action="{{ route('cambiar-modo') }}" method="POST" class="mb-2">
+                @csrf
+                <button type="submit" class="btn btn-sm w-100 text-white"
+                        style="background:linear-gradient(135deg,#ff6b35,#f7931e); border:none; font-size:.82rem;">
+                    <i class="bi bi-shield-lock-fill me-1"></i> Cambiar a Admin
+                </button>
+            </form>
+            <hr class="border-success my-1">
         @endif
-
-        <hr class="border-success my-1">
-
-        <a class="nav-link @if(request()->routeIs('dashboard')) active @endif" href="{{ route('dashboard') }}">
-            <i class="bi bi-house me-1"></i> Dashboard
-        </a>
 
         <span class="nav-section">Profesionales</span>
         <a class="nav-link @if(request()->is('nutricionistas*')) active @endif" href="{{ route('nutricionistas.index') }}">
@@ -128,6 +117,7 @@
         <a class="nav-link @if(request()->is('pagos*')) active @endif" href="{{ route('pagos.index') }}">
             <i class="bi bi-credit-card me-1"></i> Pagos
         </a>
+
     </nav>
 
     <main class="flex-grow-1 content-area">
