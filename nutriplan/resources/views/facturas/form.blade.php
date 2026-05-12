@@ -29,21 +29,29 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label fw-semibold">Número de factura <span class="text-danger">*</span></label>
+                <label class="form-label fw-semibold">
+                    Número de factura
+                    @if(isset($factura))<span class="text-danger">*</span>@endif
+                </label>
                 <input type="text" name="numero_factura" class="form-control @error('numero_factura') is-invalid @enderror"
-                       value="{{ old('numero_factura', $factura->numero_factura ?? '') }}" required>
+                       value="{{ old('numero_factura', $factura->numero_factura ?? '') }}"
+                       @if(isset($factura)) required @endif
+                       placeholder="@if(!isset($factura))Se generará automáticamente si lo dejas vacío@endif">
                 @error('numero_factura')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                @if(!isset($factura))
+                    <div class="form-text">Si lo dejas vacío, se generará automáticamente con el formato F-AAAAMMDD-NNNN.</div>
+                @endif
             </div>
 
             <div class="mb-3">
                 <label class="form-label fw-semibold">Pagado el (dejar vacío si está pendiente)</label>
                 <input type="datetime-local" name="pagado_en"
                        class="form-control @error('pagado_en') is-invalid @enderror"
-                       value="{{ old('pagado_en', isset($factura) && $factura->pagado_en ? \Carbon\Carbon::parse($factura->pagado_en)->format('Y-m-d\TH:i') : '') }}">
+                       value="{{ old('pagado_en', isset($factura) && $factura->pagado_en ? $factura->pagado_en->format('Y-m-d\TH:i') : '') }}">
                 @error('pagado_en')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 mt-4">
                 <button type="submit" class="btn btn-success">
                     <i class="bi bi-check-lg me-1"></i>{{ isset($factura) ? 'Guardar cambios' : 'Crear' }}
                 </button>

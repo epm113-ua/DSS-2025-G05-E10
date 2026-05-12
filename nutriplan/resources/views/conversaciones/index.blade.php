@@ -9,10 +9,20 @@
 </div>
 
 <form method="GET" action="{{ route('conversaciones.index') }}" class="row g-2 mb-4">
-    <div class="col-md-5">
+    <div class="col-md-4">
         <input type="text" name="buscar" class="form-control" placeholder="Buscar por colaboración o resumen…"
                value="{{ request('buscar') }}">
     </div>
+    @isset($pacientes)
+    <div class="col-md-3">
+        <select name="paciente_id" class="form-select">
+            <option value="">Todos los pacientes</option>
+            @foreach($pacientes as $p)
+                <option value="{{ $p->id }}" @selected(request('paciente_id') == $p->id)>{{ $p->nombre_completo }}</option>
+            @endforeach
+        </select>
+    </div>
+    @endisset
     <div class="col-auto">
         <button type="submit" class="btn btn-outline-success"><i class="bi bi-search me-1"></i>Buscar</button>
         <a href="{{ route('conversaciones.index') }}" class="btn btn-outline-secondary ms-1">Limpiar</a>
@@ -27,11 +37,13 @@
             <thead class="table-success">
             <tr>
                 @php
-                    function colLink($campo, $label, $orden, $dir) {
-                        $nextDir = ($orden === $campo && $dir === 'asc') ? 'desc' : 'asc';
-                        $icon = $orden === $campo ? ($dir === 'asc' ? '↑' : '↓') : '';
-                        $url = request()->fullUrlWithQuery(['orden' => $campo, 'dir' => $nextDir]);
-                        return "<a href=\"{$url}\" class=\"text-dark text-decoration-none\">{$label} {$icon}</a>";
+                    if (!function_exists('colLink')) {
+                        function colLink($campo, $label, $orden, $dir) {
+                            $nextDir = ($orden === $campo && $dir === 'asc') ? 'desc' : 'asc';
+                            $icon = $orden === $campo ? ($dir === 'asc' ? '↑' : '↓') : '';
+                            $url = request()->fullUrlWithQuery(['orden' => $campo, 'dir' => $nextDir]);
+                            return "<a href=\"{$url}\" class=\"text-dark text-decoration-none\">{$label} {$icon}</a>";
+                        }
                     }
                 @endphp
                 <th>{!! colLink('creado_en', 'Fecha', $orden, $dir) !!}</th>
@@ -45,7 +57,7 @@
             <tbody>
             @forelse($conversaciones as $c)
                 <tr>
-                    <td>{{ \Carbon\Carbon::parse($c->creado_en)->format('d/m/Y H:i') }}</td>
+                    <td>{{ $c->creado_en?->format('d/m/Y H:i') ?? '—' }}</td>
                     <td>{{ $c->paciente->nombre_completo ?? '—' }}</td>
                     <td>{{ $c->nutricionista->nombre_completo ?? '—' }}</td>
                     <td>{{ Str::limit($c->colaboracion, 40) }}</td>
@@ -57,6 +69,9 @@
                         </div>
                     </td>
                     <td class="text-end">
+                        <a href="{{ route('conversaciones.show', $c) }}" class="btn btn-sm btn-outline-success me-1" title="Ver chat">
+                            <i class="bi bi-chat-text"></i>
+                        </a>
                         <a href="{{ route('conversaciones.edit', $c) }}" class="btn btn-sm btn-outline-primary me-1">
                             <i class="bi bi-pencil"></i>
                         </a>

@@ -11,6 +11,10 @@ class Pago extends Model
 
     protected $fillable = ['factura_id', 'nombre_titular', 'fecha_pago'];
 
+    protected $casts = [
+        'fecha_pago' => 'datetime',
+    ];
+
     public function factura()
     {
         return $this->belongsTo(Factura::class);

@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Conversacion;
-use App\Models\Paciente;
-use App\Models\Nutricionista;
 use App\Models\Cita;
+use App\Models\Conversacion;
+use App\Models\Nutricionista;
+use App\Models\Paciente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ConversacionController extends Controller
 {
     public function index(Request $request)
     {
         $query = Conversacion::with(['paciente', 'nutricionista']);
+
+        if ($request->filled('paciente_id')) {
+            $query->where('paciente_id', $request->paciente_id);
+        }
+        if ($request->filled('nutricionista_id')) {
+            $query->where('nutricionista_id', $request->nutricionista_id);
+        }
 
         if ($request->filled('buscar')) {
             $term = $request->buscar;
@@ -28,8 +36,23 @@ class ConversacionController extends Controller
         if (!in_array($orden, $columnas)) $orden = 'creado_en';
 
         $conversaciones = $query->orderBy($orden, $dir)->paginate(10)->withQueryString();
+        $pacientes      = Paciente::orderBy('nombre_completo')->get();
+        $nutricionistas = Nutricionista::orderBy('nombre_completo')->get();
 
-        return view('conversaciones.index', compact('conversaciones', 'orden', 'dir'));
+        return view('conversaciones.index', compact('conversaciones', 'orden', 'dir', 'pacientes', 'nutricionistas'));
+    }
+
+    public function show(Conversacion $conversacion)
+    {
+        $conversacion->load(['paciente', 'nutricionista', 'mensajes' => fn($q) => $q->orderBy('enviado_en')]);
+
+        // Para la columna lateral con la lista de conversaciones
+        $otrasConversaciones = Conversacion::with(['paciente', 'mensajes'])
+            ->orderByDesc('updated_at')
+            ->limit(10)
+            ->get();
+
+        return view('conversaciones.show', compact('conversacion', 'otrasConversaciones'));
     }
 
     public function create()

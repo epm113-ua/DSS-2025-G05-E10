@@ -11,7 +11,19 @@ class Medicion extends Model
 
     protected $table = 'mediciones';
 
-    protected $fillable = ['paciente_id', 'fecha_medicion', 'peso_kg', 'altura_cm', 'porcentaje_grasa'];
+    protected $fillable = [
+        'paciente_id',
+        'fecha_medicion',
+        'peso_kg',
+        'altura_cm',
+        'porcentaje_grasa',
+        'imc',
+        'notas',
+    ];
+
+    protected $casts = [
+        'fecha_medicion' => 'date',
+    ];
 
     public function paciente()
     {

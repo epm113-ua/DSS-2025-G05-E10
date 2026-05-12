@@ -8,17 +8,36 @@
     </a>
 </div>
 
-<form method="GET" action="{{ route('facturas.index') }}" class="row g-2 mb-4">
-    <div class="col-md-4">
-        <input type="text" name="buscar" class="form-control" placeholder="Buscar por número de factura…"
-               value="{{ request('buscar') }}">
+<form method="GET" action="{{ route('facturas.index') }}" class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row g-2">
+            <div class="col-md-3">
+                <input type="text" name="buscar" class="form-control" placeholder="Número de factura..." value="{{ request('buscar') }}">
+            </div>
+            <div class="col-md-3">
+                <select name="estado" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="pendiente" @selected(request('estado')==='pendiente')>Pendientes</option>
+                    <option value="pagada"    @selected(request('estado')==='pagada')>Pagadas</option>
+                </select>
+            </div>
+            @isset($pacientes)
+            <div class="col-md-3">
+                <select name="paciente_id" class="form-select">
+                    <option value="">Todos los pacientes</option>
+                    @foreach($pacientes as $p)
+                        <option value="{{ $p->id }}" @selected(request('paciente_id') == $p->id)>{{ $p->nombre_completo }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endisset
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-success w-100"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+            </div>
+        </div>
+        <input type="hidden" name="orden" value="{{ $orden }}">
+        <input type="hidden" name="dir" value="{{ $dir }}">
     </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-outline-success"><i class="bi bi-search me-1"></i>Buscar</button>
-        <a href="{{ route('facturas.index') }}" class="btn btn-outline-secondary ms-1">Limpiar</a>
-    </div>
-    <input type="hidden" name="orden" value="{{ $orden }}">
-    <input type="hidden" name="dir"   value="{{ $dir }}">
 </form>
 
 <div class="card shadow-sm">
@@ -27,11 +46,13 @@
             <thead class="table-success">
             <tr>
                 @php
-                    function colLink($campo, $label, $orden, $dir) {
-                        $nextDir = ($orden === $campo && $dir === 'asc') ? 'desc' : 'asc';
-                        $icon = $orden === $campo ? ($dir === 'asc' ? '↑' : '↓') : '';
-                        $url = request()->fullUrlWithQuery(['orden' => $campo, 'dir' => $nextDir]);
-                        return "<a href=\"{$url}\" class=\"text-dark text-decoration-none\">{$label} {$icon}</a>";
+                    if (!function_exists('colLink')) {
+                        function colLink($campo, $label, $orden, $dir) {
+                            $nextDir = ($orden === $campo && $dir === 'asc') ? 'desc' : 'asc';
+                            $icon = $orden === $campo ? ($dir === 'asc' ? '↑' : '↓') : '';
+                            $url = request()->fullUrlWithQuery(['orden' => $campo, 'dir' => $nextDir]);
+                            return "<a href=\"{$url}\" class=\"text-dark text-decoration-none\">{$label} {$icon}</a>";
+                        }
                     }
                 @endphp
                 <th>{!! colLink('numero_factura', 'Número', $orden, $dir) !!}</th>
@@ -46,7 +67,7 @@
                 <tr>
                     <td><strong>{{ $f->numero_factura }}</strong></td>
                     <td>{{ $f->paciente->nombre_completo ?? '—' }}</td>
-                    <td>{{ $f->pagado_en ? \Carbon\Carbon::parse($f->pagado_en)->format('d/m/Y H:i') : '—' }}</td>
+                    <td>{{ $f->pagado_en?->format('d/m/Y H:i') ?? '—' }}</td>
                     <td>
                         @if($f->pagado_en)
                             <span class="badge bg-success">Pagada</span>

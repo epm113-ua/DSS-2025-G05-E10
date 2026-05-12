@@ -11,6 +11,10 @@ class Factura extends Model
 
     protected $fillable = ['paciente_id', 'numero_factura', 'pagado_en'];
 
+    protected $casts = [
+        'pagado_en' => 'datetime',
+    ];
+
     public function paciente()
     {
         return $this->belongsTo(Paciente::class);

@@ -13,6 +13,10 @@ class Conversacion extends Model
 
     protected $fillable = ['paciente_id', 'cita_id', 'nutricionista_id', 'colaboracion', 'porcentaje', 'mensaje_resumen', 'creado_en'];
 
+    protected $casts = [
+        'creado_en' => 'datetime',
+    ];
+
     public function paciente()
     {
         return $this->belongsTo(Paciente::class);

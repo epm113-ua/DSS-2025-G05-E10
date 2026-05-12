@@ -11,6 +11,11 @@ class Cita extends Model
 
     protected $fillable = ['nutricionista_id', 'paciente_id', 'inicio', 'fin', 'estado', 'motivo'];
 
+    protected $casts = [
+        'inicio' => 'datetime',
+        'fin'    => 'datetime',
+    ];
+
     public function nutricionista()
     {
         return $this->belongsTo(Nutricionista::class);

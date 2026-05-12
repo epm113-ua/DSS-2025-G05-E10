@@ -8,17 +8,32 @@
     </a>
 </div>
 
-<form method="GET" action="{{ route('pacientes.index') }}" class="row g-2 mb-4">
-    <div class="col-md-5">
-        <input type="text" name="buscar" class="form-control" placeholder="Buscar por nombre o ciudad…"
-               value="{{ request('buscar') }}">
+<form method="GET" action="{{ route('pacientes.index') }}" class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row g-2">
+            <div class="col-md-4">
+                <input type="text" name="buscar" class="form-control" placeholder="Buscar por nombre o ciudad..." value="{{ request('buscar') }}">
+            </div>
+            @isset($nutricionistas)
+            <div class="col-md-3">
+                <select name="nutricionista_id" class="form-select">
+                    <option value="">Todos los nutricionistas</option>
+                    @foreach($nutricionistas as $n)
+                        <option value="{{ $n->id }}" @selected(request('nutricionista_id') == $n->id)>{{ $n->nombre_completo }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endisset
+            <div class="col-md-3">
+                <input type="text" name="ciudad" class="form-control" placeholder="Ciudad..." value="{{ request('ciudad') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+            </div>
+        </div>
+        <input type="hidden" name="orden" value="{{ $orden }}">
+        <input type="hidden" name="dir" value="{{ $dir }}">
     </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-outline-success"><i class="bi bi-search me-1"></i>Buscar</button>
-        <a href="{{ route('pacientes.index') }}" class="btn btn-outline-secondary ms-1">Limpiar</a>
-    </div>
-    <input type="hidden" name="orden" value="{{ $orden }}">
-    <input type="hidden" name="dir"   value="{{ $dir }}">
 </form>
 
 <div class="card shadow-sm">
@@ -27,11 +42,13 @@
             <thead class="table-success">
             <tr>
                 @php
-                    function colLink($campo, $label, $orden, $dir) {
-                        $nextDir = ($orden === $campo && $dir === 'asc') ? 'desc' : 'asc';
-                        $icon    = $orden === $campo ? ($dir === 'asc' ? '↑' : '↓') : '';
-                        $url     = request()->fullUrlWithQuery(['orden' => $campo, 'dir' => $nextDir]);
-                        return "<a href=\"{$url}\" class=\"text-dark text-decoration-none\">{$label} {$icon}</a>";
+                    if (!function_exists('colLink')) {
+                        function colLink($campo, $label, $orden, $dir) {
+                            $nextDir = ($orden === $campo && $dir === 'asc') ? 'desc' : 'asc';
+                            $icon    = $orden === $campo ? ($dir === 'asc' ? '↑' : '↓') : '';
+                            $url     = request()->fullUrlWithQuery(['orden' => $campo, 'dir' => $nextDir]);
+                            return "<a href=\"{$url}\" class=\"text-dark text-decoration-none\">{$label} {$icon}</a>";
+                        }
                     }
                 @endphp
                 <th>{!! colLink('nombre_completo', 'Nombre', $orden, $dir) !!}</th>
@@ -45,8 +62,8 @@
             @forelse($pacientes as $p)
                 <tr>
                     <td>{{ $p->nombre_completo }}</td>
-                    <td>{{ $p->fecha_nacimiento }}</td>
-                    <td>{{ $p->ciudad }}</td>
+                    <td>{{ $p->fecha_nacimiento?->format('d/m/Y') ?? '—' }}</td>
+                    <td>{{ $p->ciudad ?? '—' }}</td>
                     <td>{{ $p->nutricionista->nombre_completo ?? '—' }}</td>
                     <td class="text-end">
                         <a href="{{ route('pacientes.edit', $p) }}" class="btn btn-sm btn-outline-primary me-1">

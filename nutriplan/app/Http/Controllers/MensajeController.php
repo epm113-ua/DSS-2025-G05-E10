@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Mensaje;
 use App\Models\Conversacion;
 use App\Models\Factura;
+use App\Models\Mensaje;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MensajeController extends Controller
 {
@@ -39,11 +40,24 @@ class MensajeController extends Controller
         $datos = $request->validate([
             'conversacion_id' => 'required|exists:conversaciones,id',
             'factura_id'      => 'nullable|exists:facturas,id',
+            'autor_user_id'   => 'nullable|exists:users,id',
             'contenido'       => 'required|string|max:1000',
-            'enviado_en'      => 'required|date',
+            'enviado_en'      => 'nullable|date',
         ]);
 
+        // Si la vista del chat no envía enviado_en, lo ponemos automáticamente
+        $datos['enviado_en'] = $datos['enviado_en'] ?? now();
+
+        // Si no viene autor_user_id, lo tomamos del usuario autenticado
+        $datos['autor_user_id'] = $datos['autor_user_id'] ?? Auth::id();
+
         Mensaje::create($datos);
+
+        // Si viene de la vista chat, devolvemos al chat
+        if ($request->filled('conversacion_id') && $request->isMethod('post') && !$request->has('_redirect_to_index')) {
+            return redirect()->route('conversaciones.show', $datos['conversacion_id'])
+                ->with('exito', 'Mensaje enviado.');
+        }
 
         return redirect()->route('mensajes.index')->with('exito', 'Mensaje creado correctamente.');
     }

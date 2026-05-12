@@ -8,14 +8,49 @@
     </a>
 </div>
 
-<form method="GET" action="{{ route('citas.index') }}" class="row g-2 mb-4">
-    <div class="col-md-5">
-        <input type="text" name="buscar" class="form-control" placeholder="Buscar por motivo o estado…"
-               value="{{ request('buscar') }}">
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-outline-success"><i class="bi bi-search me-1"></i>Buscar</button>
-        <a href="{{ route('citas.index') }}" class="btn btn-outline-secondary ms-1">Limpiar</a>
+<form method="GET" action="{{ route('citas.index') }}" class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row g-2">
+            <div class="col-md-3">
+                <input type="text" name="buscar" class="form-control" placeholder="Buscar..." value="{{ request('buscar') }}">
+            </div>
+            <div class="col-md-2">
+                <select name="estado" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="pendiente"  @selected(request('estado')==='pendiente')>Pendiente</option>
+                    <option value="completada" @selected(request('estado')==='completada')>Completada</option>
+                    <option value="cancelada"  @selected(request('estado')==='cancelada')>Cancelada</option>
+                </select>
+            </div>
+            @isset($nutricionistas)
+            <div class="col-md-2">
+                <select name="nutricionista_id" class="form-select">
+                    <option value="">Todos los nutricionistas</option>
+                    @foreach($nutricionistas as $n)
+                        <option value="{{ $n->id }}" @selected(request('nutricionista_id') == $n->id)>{{ $n->nombre_completo }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endisset
+            @isset($pacientes)
+            <div class="col-md-2">
+                <select name="paciente_id" class="form-select">
+                    <option value="">Todos los pacientes</option>
+                    @foreach($pacientes as $p)
+                        <option value="{{ $p->id }}" @selected(request('paciente_id') == $p->id)>{{ $p->nombre_completo }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endisset
+            <div class="col-md-3 d-flex gap-2">
+                <input type="date" name="fecha_desde" class="form-control" value="{{ request('fecha_desde') }}" title="Desde">
+                <input type="date" name="fecha_hasta" class="form-control" value="{{ request('fecha_hasta') }}" title="Hasta">
+            </div>
+        </div>
+        <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-success"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+            <a href="{{ route('citas.index') }}" class="btn btn-outline-secondary">Limpiar</a>
+        </div>
     </div>
     <input type="hidden" name="orden" value="{{ $orden }}">
     <input type="hidden" name="dir"   value="{{ $dir }}">
@@ -27,11 +62,13 @@
             <thead class="table-success">
             <tr>
                 @php
-                    function colLink($campo, $label, $orden, $dir) {
-                        $nextDir = ($orden === $campo && $dir === 'asc') ? 'desc' : 'asc';
-                        $icon = $orden === $campo ? ($dir === 'asc' ? '↑' : '↓') : '';
-                        $url = request()->fullUrlWithQuery(['orden' => $campo, 'dir' => $nextDir]);
-                        return "<a href=\"{$url}\" class=\"text-dark text-decoration-none\">{$label} {$icon}</a>";
+                    if (!function_exists('colLink')) {
+                        function colLink($campo, $label, $orden, $dir) {
+                            $nextDir = ($orden === $campo && $dir === 'asc') ? 'desc' : 'asc';
+                            $icon = $orden === $campo ? ($dir === 'asc' ? '↑' : '↓') : '';
+                            $url = request()->fullUrlWithQuery(['orden' => $campo, 'dir' => $nextDir]);
+                            return "<a href=\"{$url}\" class=\"text-dark text-decoration-none\">{$label} {$icon}</a>";
+                        }
                     }
                 @endphp
                 <th>{!! colLink('inicio', 'Inicio', $orden, $dir) !!}</th>
@@ -49,8 +86,8 @@
             @endphp
             @forelse($citas as $c)
                 <tr>
-                    <td>{{ \Carbon\Carbon::parse($c->inicio)->format('d/m/Y H:i') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($c->fin)->format('d/m/Y H:i') }}</td>
+                    <td>{{ $c->inicio->format('d/m/Y H:i') }}</td>
+                    <td>{{ $c->fin->format('d/m/Y H:i') }}</td>
                     <td>{{ $c->paciente->nombre_completo ?? '—' }}</td>
                     <td>{{ $c->nutricionista->nombre_completo ?? '—' }}</td>
                     <td>
