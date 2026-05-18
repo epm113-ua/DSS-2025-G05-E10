@@ -1,59 +1,26 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Nutricionista;
-use App\Models\Paciente;
 use App\Models\Cita;
-use App\Models\Receta;
-use App\Models\Medicion;
-use App\Models\Factura;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\Paciente;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        if (!User::modoAdmin()) {
-            return redirect()->route('nutricionistas.index');
+        $user = Auth::user();
+        // Admin va directo al panel de administración
+        if ($user->esAdmin()) {
+            return redirect()->route('admin.index');
         }
-
-        $usuarioActual = User::currentUser();
-
+        // Nutricionista
+        $nutricionista = $user->nutricionista;
         $stats = [
-            'nutricionistas' => Nutricionista::count(),
-            'pacientes' => Paciente::count(),
-            'citas' => Cita::count(),
-            'recetas' => Receta::count(),
-            'mediciones' => Medicion::count(),
-            'facturas_pendientes' => Factura::whereNull('pagado_en')->count(),
+            'mis_pacientes'    => $nutricionista ? $nutricionista->pacientes()->count() : 0,
+            'citas_hoy'        => $nutricionista ? Cita::where('nutricionista_id',$nutricionista->id)->whereDate('inicio',today())->count() : 0,
+            'citas_pendientes' => $nutricionista ? Cita::where('nutricionista_id',$nutricionista->id)->where('estado','pendiente')->where('inicio','>=',now())->count() : 0,
         ];
-
-        $citasRecientes = Cita::with(['paciente', 'nutricionista'])
-            ->orderByDesc('inicio')
-            ->limit(5)
-            ->get();
-
-        $medidasRecientes = Medicion::with('paciente')
-            ->orderByDesc('fecha_medicion')
-            ->limit(5)
-            ->get();
-
-        return view('dashboard', compact(
-            'usuarioActual', 'stats', 'citasRecientes', 'medidasRecientes'
-        ));
-    }
-
-    public function cambiarModo(Request $request)
-    {
-        $modoActual = session('modo_admin', true);
-        session(['modo_admin' => !$modoActual]);
-
-        if ($modoActual) {
-            return redirect()->route('nutricionistas.index');
-        }
-
-        return redirect()->route('dashboard');
+        return view('dashboard', compact('user','stats','nutricionista'));
     }
 }

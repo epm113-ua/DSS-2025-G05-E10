@@ -10,41 +10,40 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password', 'is_admin'];
+    const ROL_ADMIN         = 'admin';
+    const ROL_NUTRICIONISTA = 'nutricionista';
+    const ROL_PACIENTE      = 'paciente';
 
-    protected $hidden = ['password', 'remember_token'];
+    protected $fillable = ['name', 'email', 'password', 'is_admin', 'rol'];
+    protected $hidden   = ['password', 'remember_token'];
 
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'  => 'hashed',
-            'is_admin' => 'boolean',
+            'password'          => 'hashed',
+            'is_admin'          => 'boolean',
         ];
     }
 
-    public static function currentUser(): self
+    public function esAdmin(): bool         { return $this->rol === self::ROL_ADMIN; }
+    public function esNutricionista(): bool { return $this->rol === self::ROL_NUTRICIONISTA; }
+    public function esPaciente(): bool      { return $this->rol === self::ROL_PACIENTE; }
+
+    public function tieneRol(string ...$roles): bool
     {
-        return self::firstOrCreate(
-            ['email' => 'admin@nutriplan.com'],
-            [
-                'name' => 'Administrador NutriPlan',
-                'password' => bcrypt('password'),
-                'is_admin' => true,
-            ]
-        );
+        return in_array($this->rol, $roles, true);
     }
 
-    public function esAdmin(): bool
+    public function rutaInicio(): string
     {
-        return (bool) $this->is_admin;
+        return match ($this->rol) {
+            self::ROL_PACIENTE      => route('paciente.mi-dia'),
+            self::ROL_NUTRICIONISTA => route('dashboard'),
+            default                 => route('dashboard'),
+        };
     }
 
-    public static function modoAdmin(): bool
-    {
-        if (!self::currentUser()->esAdmin()) {
-            return false;
-        }
-        return session('modo_admin', true);
-    }
+    public function paciente()      { return $this->hasOne(Paciente::class); }
+    public function nutricionista() { return $this->hasOne(Nutricionista::class); }
 }

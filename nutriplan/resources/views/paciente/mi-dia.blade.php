@@ -1,100 +1,89 @@
 @extends('layouts.paciente')
-@section('titulo', 'Mi día')
-
+@section('title','Mi Día')
+@section('breadcrumb','Mi Día')
 @section('contenido')
-<h1 class="page-title">Mi día</h1>
-<p class="text-muted mb-4">{{ \Carbon\Carbon::now()->locale('es')->isoFormat('dddd, D [de] MMMM [de] Y') }}</p>
-
-<div class="row g-3 mb-4">
-    <div class="col-md-4">
-        <div class="card p-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="bg-success bg-opacity-10 rounded p-2">
-                    <i class="bi bi-calendar-check fs-3 text-success"></i>
-                </div>
-                <div>
-                    <small class="text-muted">Próxima cita</small>
-                    @if($proximaCita)
-                        <div class="fw-bold">{{ $proximaCita->inicio->format('d/m H:i') }}</div>
-                        <small class="text-muted">{{ $proximaCita->nutricionista->nombre_completo }}</small>
-                    @else
-                        <div class="fw-bold text-muted">Sin citas</div>
-                    @endif
-                </div>
-            </div>
-        </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-0">¡Buenos días, {{ Auth::user()->name }}!</h4>
+        <p class="text-muted small mb-0">{{ now()->isoFormat('dddd, D [de] MMMM') }}</p>
     </div>
-    <div class="col-md-4">
-        <div class="card p-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="bg-info bg-opacity-10 rounded p-2">
-                    <i class="bi bi-speedometer fs-3 text-info"></i>
-                </div>
-                <div>
-                    <small class="text-muted">Última medición</small>
-                    @if($ultimaMedicion)
-                        <div class="fw-bold">{{ $ultimaMedicion->peso_kg }} kg @if($ultimaMedicion->imc) · IMC {{ number_format($ultimaMedicion->imc, 1) }} @endif</div>
-                        <small class="text-muted">{{ $ultimaMedicion->fecha_medicion->format('d/m/Y') }}</small>
-                    @else
-                        <div class="fw-bold text-muted">Sin datos</div>
-                    @endif
-                </div>
+    <div class="d-flex align-items-center gap-2">
+        @if($paciente->nutricionista?->foto)
+            <img src="{{ asset('storage/'.$paciente->nutricionista->foto) }}" class="rounded-circle" style="width:36px;height:36px;object-fit:cover">
+        @else
+            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width:36px;height:36px;font-size:.75rem;font-weight:700">
+                {{ strtoupper(substr($paciente->nutricionista?->nombre_completo ?? 'N',0,2)) }}
             </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card p-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="bg-warning bg-opacity-10 rounded p-2">
-                    <i class="bi bi-person-badge fs-3 text-warning"></i>
-                </div>
-                <div>
-                    <small class="text-muted">Mi nutricionista</small>
-                    <div class="fw-bold">{{ $paciente->nutricionista->nombre_completo }}</div>
-                    <small class="text-muted">{{ $paciente->nutricionista->especialidad }}</small>
-                </div>
-            </div>
-        </div>
+        @endif
+        <span class="text-muted small d-none d-md-inline">{{ $paciente->nutricionista?->nombre_completo }}</span>
     </div>
 </div>
 
-<div class="card mb-4">
-    <div class="card-header bg-white border-bottom">
-        <h5 class="mb-0"><i class="bi bi-cup-hot me-2 text-success"></i>Comidas de hoy</h5>
-    </div>
-    <div class="card-body">
-        @if($itemsHoy->isEmpty())
-            <p class="text-muted mb-0 text-center py-4">
-                <i class="bi bi-info-circle fs-1 d-block mb-2"></i>
-                No hay comidas planificadas para hoy.
-                @if(!$plan)
-                    Tu nutricionista aún no te ha asignado un plan semanal.
-                @endif
-            </p>
-        @else
-            <div class="row g-3">
-                @foreach($itemsHoy as $item)
-                    <div class="col-md-6 col-lg-4">
-                        <div class="border rounded p-3 h-100">
-                            <span class="badge bg-success-subtle text-success-dark mb-2">{{ ucfirst($item->tipo_comida) }}</span>
-                            <h6 class="fw-bold mb-1">{{ $item->receta->nombre ?? '—' }}</h6>
-                            @if($item->notas)
-                                <small class="text-muted d-block">{{ $item->notas }}</small>
+<div class="row g-4">
+    {{-- Comidas de hoy --}}
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white fw-semibold"><i class="bi bi-sun me-1"></i>Comidas de hoy</div>
+            <div class="card-body">
+                @forelse($itemsHoy as $item)
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <div class="rounded-circle bg-success bg-opacity-10 p-2 flex-shrink-0">
+                            <i class="bi bi-egg-fried text-success"></i>
+                        </div>
+                        <div>
+                            <div class="fw-semibold small">{{ $item->tipo_comida }}</div>
+                            <div class="text-muted small">{{ $item->receta?->nombre ?? '—' }}</div>
+                            @if($item->receta)
+                                <div class="text-muted" style="font-size:.72rem">{{ $item->receta->calorias_kcal }} kcal</div>
                             @endif
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <p class="text-muted text-center py-3">No hay comidas planificadas para hoy.</p>
+                @endforelse
             </div>
-        @endif
+        </div>
     </div>
-</div>
 
-<div class="card">
-    <div class="card-body">
-        <h6 class="fw-bold"><i class="bi bi-lightbulb text-warning me-1"></i> Consejo del día</h6>
-        <p class="text-muted small mb-0">
-            Bebe al menos 1,5 litros de agua a lo largo del día. Una correcta hidratación favorece el metabolismo y reduce la sensación de hambre.
-        </p>
+    {{-- Info lateral --}}
+    <div class="col-lg-5 d-flex flex-column gap-3">
+        {{-- Próxima cita --}}
+        <div class="card">
+            <div class="card-header bg-success text-white fw-semibold"><i class="bi bi-calendar-check me-1"></i>Próxima cita</div>
+            <div class="card-body text-center">
+                @if($proximaCita)
+                    <div class="fw-bold fs-5">{{ $proximaCita->inicio->format('d/m/Y') }}</div>
+                    <div class="text-muted small">{{ $proximaCita->inicio->format('H:i') }}</div>
+                    <div class="text-muted small mt-1">{{ $proximaCita->motivo }}</div>
+                @else
+                    <p class="text-muted small mb-0">No hay citas próximas.</p>
+                @endif
+            </div>
+        </div>
+
+        {{-- Último peso --}}
+        @if($ultimaMedicion)
+        <div class="card">
+            <div class="card-header bg-success text-white fw-semibold"><i class="bi bi-activity me-1"></i>Última medición</div>
+            <div class="card-body">
+                <div class="row text-center g-2">
+                    <div class="col-4">
+                        <div class="fw-bold fs-5 text-success">{{ $ultimaMedicion->peso_kg }} kg</div>
+                        <div class="text-muted" style="font-size:.72rem">Peso</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="fw-bold fs-5">{{ $ultimaMedicion->imc }}</div>
+                        <div class="text-muted" style="font-size:.72rem">IMC</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="fw-bold fs-5">{{ $ultimaMedicion->porcentaje_grasa }}%</div>
+                        <div class="text-muted" style="font-size:.72rem">Grasa</div>
+                    </div>
+                </div>
+                <div class="text-muted text-center small mt-2">{{ $ultimaMedicion->fecha_medicion->format('d/m/Y') }}</div>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 @endsection
