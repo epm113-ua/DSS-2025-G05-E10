@@ -17,7 +17,6 @@ El proyecto combina una parte pública y otra privada, autenticación de usuario
 - [Estructura general](#estructura-general)
 - [Notas importantes](#notas-importantes)
 - [Autoría](#autoría)
-- [Licencia](#licencia)
 
 ---
 
@@ -198,10 +197,7 @@ La aplicación está organizada en torno a varios módulos principales:
 ## Autoría
 
 Proyecto desarrollado como parte de la asignatura **Diseño de Sistemas Software**.  
-Puedes añadir aquí los nombres del equipo, grupo y curso si quieres dejar el README totalmente listo para entrega en GitHub.
+By Paco Montoyo & Esteban Patiño
 
 ---
 
-## Licencia
-
-Proyecto académico. Si tu repositorio usa una licencia concreta, añádela aquí.
