@@ -10,20 +10,28 @@
                 <form method="POST" action="<?php echo e(route('nutricionista.mi-perfil.update')); ?>" enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
 
-                    <?php if($nutricionista->foto): ?>
-                        <div class="text-center mb-3">
-                            <img src="<?php echo e(asset('storage/'.$nutricionista->foto)); ?>?v=<?php echo e(time()); ?>" class="rounded-circle"
-                                 style="width:80px;height:80px;object-fit:cover" alt="Foto">
-                        </div>
-                    <?php else: ?>
-                        <div class="text-center mb-3">
-                            <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center fw-bold mx-auto"
-                                 style="width:80px;height:80px;font-size:1.6rem">
-                                <?php echo e(strtoupper(substr($nutricionista->nombre_completo,0,1))); ?><?php echo e(strtoupper(substr(strstr($nutricionista->nombre_completo,' '),1,1))); ?>
-
-                            </div>
-                        </div>
-                    <?php endif; ?>
+                    <div class="text-center mb-3">
+                        <?php if (isset($component)) { $__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.avatar','data' => ['foto' => $nutricionista->foto,'nombre' => $nutricionista->nombre_completo,'size' => 80]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('avatar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['foto' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($nutricionista->foto),'nombre' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($nutricionista->nombre_completo),'size' => 80]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b)): ?>
+<?php $attributes = $__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b; ?>
+<?php unset($__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b)): ?>
+<?php $component = $__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b; ?>
+<?php unset($__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b); ?>
+<?php endif; ?>
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Foto de perfil</label>

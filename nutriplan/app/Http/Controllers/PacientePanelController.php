@@ -103,11 +103,18 @@ class PacientePanelController extends Controller
 
     public function misMensajes()
     {
-        $paciente     = $this->paciente()->load('nutricionista');
-        $conversacion = Conversacion::where('paciente_id',$paciente->id)->latest('updated_at')->first();
-        $mensajes     = $conversacion
+        $paciente = $this->paciente()->load('nutricionista');
+
+        // Conversación compartida con su nutricionista (la más reciente con ese nutri)
+        $conversacion = Conversacion::where('paciente_id', $paciente->id)
+            ->when($paciente->nutricionista_id, fn($q) => $q->where('nutricionista_id', $paciente->nutricionista_id))
+            ->latest('updated_at')
+            ->first();
+
+        $mensajes = $conversacion
             ? $conversacion->mensajes()->with('autor')->orderBy('enviado_en')->orderBy('created_at')->get()
             : collect();
+
         return view('paciente.mis-mensajes', compact('paciente','conversacion','mensajes'));
     }
 }

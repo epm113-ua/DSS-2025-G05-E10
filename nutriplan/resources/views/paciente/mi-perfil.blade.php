@@ -12,19 +12,9 @@
                 <form method="POST" action="{{ route('paciente.mi-perfil.update') }}" enctype="multipart/form-data">
                     @csrf
 
-                    @if($paciente->foto)
-                        <div class="text-center mb-3">
-                            <img src="{{ asset('storage/'.$paciente->foto) }}?v={{ time() }}" class="rounded-circle"
-                                 style="width:80px;height:80px;object-fit:cover" alt="Foto" id="fotoPreview">
-                        </div>
-                    @else
-                        <div class="text-center mb-3">
-                            <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center fw-bold"
-                                 style="width:80px;height:80px;font-size:1.6rem" id="fotoPreview">
-                                {{ strtoupper(substr($paciente->nombre_completo ?? Auth::user()->name,0,1)) }}{{ strtoupper(substr(strstr($paciente->nombre_completo ?? Auth::user()->name,' '),1,1)) }}
-                            </div>
-                        </div>
-                    @endif
+                    <div class="text-center mb-3">
+                        <x-avatar :foto="$paciente->foto" :nombre="Auth::user()->name" :size="80" />
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Foto de perfil</label>
@@ -72,15 +62,9 @@
         <div class="card">
             <div class="card-header bg-success text-white fw-semibold"><i class="bi bi-person-badge me-1"></i>Nutricionista asignado/a</div>
             <div class="card-body text-center py-4">
-                @if($paciente->nutricionista?->foto)
-                    <img src="{{ asset('storage/'.$paciente->nutricionista->foto) }}"
-                         class="rounded-circle mb-3" style="width:64px;height:64px;object-fit:cover">
-                @else
-                    <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center mb-3"
-                         style="width:64px;height:64px;font-size:1.5rem;font-weight:700">
-                        {{ strtoupper(substr($paciente->nutricionista?->nombre_completo ?? 'N',0,1)) }}
-                    </div>
-                @endif
+                <x-avatar :foto="$paciente->nutricionista?->foto"
+                          :nombre="$paciente->nutricionista?->nombre_completo ?? 'N'"
+                          :size="64" class="mb-3" />
                 <h6 class="fw-bold mb-1">{{ $paciente->nutricionista?->nombre_completo ?? '—' }}</h6>
                 <p class="text-muted small mb-2">{{ $paciente->nutricionista?->especialidad }}</p>
                 <span class="badge bg-light text-muted border">

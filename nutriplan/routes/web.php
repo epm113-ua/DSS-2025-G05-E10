@@ -52,11 +52,15 @@ Route::middleware(['auth','rol:paciente'])->prefix('paciente')->name('paciente.'
 Route::middleware(['auth','rol:nutricionista,admin'])->group(function(){
     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
 
+    // Bandeja de chat (nutricionista): vista de chat directo con sus pacientes
+    Route::get('/mensajes/chat', [MensajeController::class,'chat'])->name('mensajes.chat');
+
     Route::resource('pacientes',           PacienteController::class);
     Route::resource('citas',               CitaController::class);
     Route::resource('recetas',             RecetaController::class);
     Route::resource('ingredientes',        IngredienteController::class);
-    Route::resource('conversaciones',      ConversacionController::class);
+    Route::resource('conversaciones',      ConversacionController::class)
+        ->parameters(['conversaciones' => 'conversacion']);
     Route::resource('mensajes',            MensajeController::class);
     Route::resource('facturas',            FacturaController::class);
     Route::resource('pagos',               PagoController::class);

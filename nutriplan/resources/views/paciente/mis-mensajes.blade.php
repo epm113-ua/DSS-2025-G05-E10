@@ -16,13 +16,12 @@
 @section('contenido')
 <h4 class="fw-bold mb-4">Mensajes con mi nutricionista</h4>
 
-@if($conversacion)
+@if($paciente->nutricionista)
 <div class="chat-wrap">
     <div class="chat-hdr">
-        <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-             style="width:38px;height:38px;font-size:.8rem">
-            {{ strtoupper(substr($paciente->nutricionista?->nombre_completo ?? 'N',0,2)) }}
-        </div>
+        <x-avatar :foto="$paciente->nutricionista?->foto"
+                  :nombre="$paciente->nutricionista?->nombre_completo ?? 'N'"
+                  :size="38" bg="#fff" color="#2e7d52" />
         <div>
             <div class="fw-semibold">{{ $paciente->nutricionista?->nombre_completo }}</div>
             <div style="font-size:.75rem;opacity:.8">{{ $conversacion->colaboracion ?? 'Conversación directa' }}</div>
@@ -39,7 +38,7 @@
                         </span>
                     @endif
                     {{ $msg->contenido }}
-                    <span class="msg-time">{{ $msg->enviado_en?->format('H:i') ?? $msg->created_at->format('H:i') }}</span>
+                    <span class="msg-time">{{ $msg->enviado_en?->format('d/m H:i') ?? $msg->created_at->format('d/m H:i') }}</span>
                 </div>
             </div>
         @empty
@@ -50,12 +49,14 @@
         @endforelse
     </div>
     <div class="chat-foot">
-        {{-- Usa la ruta del panel paciente, no mensajes.store --}}
         <form method="POST" action="{{ route('paciente.enviar-mensaje') }}" class="d-flex gap-2">
             @csrf
-            <input type="hidden" name="conversacion_id" value="{{ $conversacion->id }}">
+            @if($conversacion)
+                <input type="hidden" name="conversacion_id" value="{{ $conversacion->id }}">
+            @endif
+            <input type="hidden" name="paciente_id" value="{{ $paciente->id }}">
             <input type="text" name="contenido" class="form-control"
-                   placeholder="Escribe un mensaje..." required autocomplete="off">
+                   placeholder="Escribe un mensaje..." required autocomplete="off" maxlength="2000">
             <button type="submit" class="btn btn-success px-3">
                 <i class="bi bi-send-fill"></i>
             </button>
@@ -66,8 +67,8 @@
 <div class="card text-center py-5">
     <div class="card-body">
         <i class="bi bi-chat-dots fs-1 text-success opacity-50 d-block mb-3"></i>
-        <h5 class="fw-bold">Aún no tienes conversación activa</h5>
-        <p class="text-muted">Tu nutricionista abrirá un canal de comunicación contigo en breve.</p>
+        <h5 class="fw-bold">Aún no tienes nutricionista asignado</h5>
+        <p class="text-muted">Cuando se te asigne un nutricionista podrás comunicarte aquí.</p>
     </div>
 </div>
 @endif

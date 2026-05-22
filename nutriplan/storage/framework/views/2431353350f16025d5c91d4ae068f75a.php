@@ -15,14 +15,29 @@
 <?php $__env->startSection('contenido'); ?>
 <h4 class="fw-bold mb-4">Mensajes con mi nutricionista</h4>
 
-<?php if($conversacion): ?>
+<?php if($paciente->nutricionista): ?>
 <div class="chat-wrap">
     <div class="chat-hdr">
-        <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-             style="width:38px;height:38px;font-size:.8rem">
-            <?php echo e(strtoupper(substr($paciente->nutricionista?->nombre_completo ?? 'N',0,2))); ?>
-
-        </div>
+        <?php if (isset($component)) { $__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.avatar','data' => ['foto' => $paciente->nutricionista?->foto,'nombre' => $paciente->nutricionista?->nombre_completo ?? 'N','size' => 38,'bg' => '#fff','color' => '#2e7d52']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('avatar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['foto' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($paciente->nutricionista?->foto),'nombre' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($paciente->nutricionista?->nombre_completo ?? 'N'),'size' => 38,'bg' => '#fff','color' => '#2e7d52']); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b)): ?>
+<?php $attributes = $__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b; ?>
+<?php unset($__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b)): ?>
+<?php $component = $__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b; ?>
+<?php unset($__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b); ?>
+<?php endif; ?>
         <div>
             <div class="fw-semibold"><?php echo e($paciente->nutricionista?->nombre_completo); ?></div>
             <div style="font-size:.75rem;opacity:.8"><?php echo e($conversacion->colaboracion ?? 'Conversación directa'); ?></div>
@@ -41,7 +56,7 @@
                     <?php endif; ?>
                     <?php echo e($msg->contenido); ?>
 
-                    <span class="msg-time"><?php echo e($msg->enviado_en?->format('H:i') ?? $msg->created_at->format('H:i')); ?></span>
+                    <span class="msg-time"><?php echo e($msg->enviado_en?->format('d/m H:i') ?? $msg->created_at->format('d/m H:i')); ?></span>
                 </div>
             </div>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -52,12 +67,14 @@
         <?php endif; ?>
     </div>
     <div class="chat-foot">
-        
         <form method="POST" action="<?php echo e(route('paciente.enviar-mensaje')); ?>" class="d-flex gap-2">
             <?php echo csrf_field(); ?>
-            <input type="hidden" name="conversacion_id" value="<?php echo e($conversacion->id); ?>">
+            <?php if($conversacion): ?>
+                <input type="hidden" name="conversacion_id" value="<?php echo e($conversacion->id); ?>">
+            <?php endif; ?>
+            <input type="hidden" name="paciente_id" value="<?php echo e($paciente->id); ?>">
             <input type="text" name="contenido" class="form-control"
-                   placeholder="Escribe un mensaje..." required autocomplete="off">
+                   placeholder="Escribe un mensaje..." required autocomplete="off" maxlength="2000">
             <button type="submit" class="btn btn-success px-3">
                 <i class="bi bi-send-fill"></i>
             </button>
@@ -68,8 +85,8 @@
 <div class="card text-center py-5">
     <div class="card-body">
         <i class="bi bi-chat-dots fs-1 text-success opacity-50 d-block mb-3"></i>
-        <h5 class="fw-bold">Aún no tienes conversación activa</h5>
-        <p class="text-muted">Tu nutricionista abrirá un canal de comunicación contigo en breve.</p>
+        <h5 class="fw-bold">Aún no tienes nutricionista asignado</h5>
+        <p class="text-muted">Cuando se te asigne un nutricionista podrás comunicarte aquí.</p>
     </div>
 </div>
 <?php endif; ?>

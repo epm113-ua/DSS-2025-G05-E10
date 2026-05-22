@@ -38,16 +38,48 @@
     <div class="table-responsive">
         <table class="table table-hover mb-0 align-middle">
             <thead class="table-dark">
-                <tr><th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Vinculado a</th><th class="text-end">Acciones</th></tr>
+                <tr>
+                    <th>ID</th>
+                    <th style="width:44px"></th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Vinculado a</th>
+                    <th class="text-end">Acciones</th>
+                </tr>
             </thead>
             <tbody>
                 @forelse($usuarios as $u)
+                @php
+                    $colores = ['admin'=>'danger','nutricionista'=>'primary','paciente'=>'success'];
+                    // Obtener foto según el rol vinculado
+                    $foto = null;
+                    if ($u->nutricionista && $u->nutricionista->foto) {
+                        $foto = $u->nutricionista->foto;
+                    } elseif ($u->paciente && $u->paciente->foto) {
+                        $foto = $u->paciente->foto;
+                    }
+                    // Iniciales del nombre
+                    $parts = explode(' ', trim($u->name));
+                    $initials = strtoupper(substr($parts[0],0,1)) . (isset($parts[1]) ? strtoupper(substr($parts[1],0,1)) : '');
+                    $bgColor = ['admin'=>'#dc3545','nutricionista'=>'#0d6efd','paciente'=>'#198754'][$u->rol] ?? '#6c757d';
+                @endphp
                 <tr>
                     <td class="text-muted small">{{ $u->id }}</td>
+                    <td>
+                        @if($foto)
+                            <img src="{{ asset('storage/'.$foto) }}"
+                                 class="rounded-circle" style="width:32px;height:32px;object-fit:cover" alt="foto">
+                        @else
+                            <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold"
+                                 style="width:32px;height:32px;font-size:.62rem;background:{{ $bgColor }}">
+                                {{ $initials }}
+                            </div>
+                        @endif
+                    </td>
                     <td class="fw-semibold">{{ $u->name }}</td>
                     <td class="small">{{ $u->email }}</td>
                     <td>
-                        @php $colores=['admin'=>'danger','nutricionista'=>'primary','paciente'=>'success']; @endphp
                         <span class="badge bg-{{ $colores[$u->rol] ?? 'secondary' }} text-capitalize">{{ $u->rol }}</span>
                     </td>
                     <td class="small text-muted">
@@ -75,7 +107,7 @@
                     </td>
                 </tr>
                 @empty
-                    <tr><td colspan="6" class="text-center text-muted py-4">No hay usuarios.</td></tr>
+                    <tr><td colspan="7" class="text-center text-muted py-4">No hay usuarios.</td></tr>
                 @endforelse
             </tbody>
         </table>

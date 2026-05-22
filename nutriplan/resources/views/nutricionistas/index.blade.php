@@ -24,7 +24,7 @@
 
 <div class="card shadow-sm">
     <div class="card-body p-0">
-        <table class="table table-hover mb-0">
+        <table class="table table-hover mb-0 align-middle">
             <thead class="table-success">
             <tr>
                 @php
@@ -35,6 +35,7 @@
                         return "<a href=\"{$url}\" class=\"text-dark text-decoration-none\">{$label} {$icon}</a>";
                     }
                 @endphp
+                <th style="width:48px"></th>
                 <th>{!! sortLink('nombre_completo', 'Nombre', $orden, $dir) !!}</th>
                 <th>{!! sortLink('especialidad', 'Especialidad', $orden, $dir) !!}</th>
                 <th>{!! sortLink('ciudad', 'Ciudad', $orden, $dir) !!}</th>
@@ -45,8 +46,23 @@
             </thead>
             <tbody>
             @forelse($nutricionistas as $n)
+                @php
+                    $parts = explode(' ', trim($n->nombre_completo));
+                    $initials = strtoupper(substr($parts[0],0,1)) . (isset($parts[1]) ? strtoupper(substr($parts[1],0,1)) : '');
+                @endphp
                 <tr>
-                    <td>{{ $n->nombre_completo }}</td>
+                    <td>
+                        @if($n->foto)
+                            <img src="{{ asset('storage/'.$n->foto) }}"
+                                 class="rounded-circle" style="width:34px;height:34px;object-fit:cover" alt="foto">
+                        @else
+                            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+                                 style="width:34px;height:34px;font-size:.65rem">
+                                {{ $initials }}
+                            </div>
+                        @endif
+                    </td>
+                    <td class="fw-semibold">{{ $n->nombre_completo }}</td>
                     <td>{{ $n->especialidad }}</td>
                     <td>{{ $n->ciudad }}</td>
                     <td>{{ $n->tienda->nombre_tienda ?? '—' }}</td>
@@ -65,7 +81,7 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="6" class="text-center text-muted py-4">No hay nutricionistas registrados.</td></tr>
+                <tr><td colspan="7" class="text-center text-muted py-4">No hay nutricionistas registrados.</td></tr>
             @endforelse
             </tbody>
         </table>
@@ -73,5 +89,6 @@
 </div>
 
 <div class="mt-3">
+    {{ $nutricionistas->links() }}
 </div>
 @endsection

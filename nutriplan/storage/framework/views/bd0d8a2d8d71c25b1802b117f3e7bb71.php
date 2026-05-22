@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <title><?php if (! empty(trim($__env->yieldContent('titulo')))): ?><?php echo $__env->yieldContent('titulo'); ?>@elsehasSection('title')<?php echo $__env->yieldContent('title'); ?><?php else: ?> Panel <?php endif; ?> — NutriPlan</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🌸</text></svg>">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -68,7 +69,7 @@
             <a href="<?php echo e(route('recetas.index')); ?>"          class="nav-item <?php echo e(request()->routeIs('recetas.*') ? 'active':''); ?>"><i class="bi bi-book"></i><span>Recetas</span></a>
             <a href="<?php echo e(route('ingredientes.index')); ?>"     class="nav-item <?php echo e(request()->routeIs('ingredientes.*') ? 'active':''); ?>"><i class="bi bi-egg-fried"></i><span>Ingredientes</span></a>
             <div class="nav-sep"></div>
-            <a href="<?php echo e(route('conversaciones.index')); ?>"   class="nav-item <?php echo e(request()->routeIs('conversaciones.*') ? 'active':''); ?>"><i class="bi bi-chat-dots"></i><span>Mensajes</span></a>
+            <a href="<?php echo e(route('mensajes.chat')); ?>"   class="nav-item <?php echo e(request()->routeIs('mensajes.chat') || request()->routeIs('conversaciones.*') ? 'active':''); ?>"><i class="bi bi-chat-dots"></i><span>Mensajes</span></a>
             <div class="nav-sep"></div>
             <a href="<?php echo e(route('facturas.index')); ?>"         class="nav-item <?php echo e(request()->routeIs('facturas.*') ? 'active':''); ?>"><i class="bi bi-receipt"></i><span>Facturas</span></a>
             <a href="<?php echo e(route('pagos.index')); ?>"             class="nav-item <?php echo e(request()->routeIs('pagos.*') ? 'active':''); ?>"><i class="bi bi-credit-card"></i><span>Pagos</span></a>
@@ -77,14 +78,26 @@
         </div>
         <div class="nav-user">
             <?php $n = Auth::user()->nutricionista; ?>
-            <div class="avatar">
-                <?php if($n && $n->foto): ?>
-                    <img src="<?php echo e(asset('storage/'.$n->foto)); ?>" alt="foto">
-                <?php else: ?>
-                    <?php echo e(strtoupper(substr(Auth::user()->name,0,2))); ?>
-
-                <?php endif; ?>
-            </div>
+            <?php if (isset($component)) { $__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.avatar','data' => ['foto' => $n?->foto,'nombre' => Auth::user()->name,'size' => 32]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('avatar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['foto' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($n?->foto),'nombre' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(Auth::user()->name),'size' => 32]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b)): ?>
+<?php $attributes = $__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b; ?>
+<?php unset($__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b)): ?>
+<?php $component = $__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b; ?>
+<?php unset($__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b); ?>
+<?php endif; ?>
             <div class="d-none d-lg-block">
                 <div style="font-size:.79rem;font-weight:600;color:#1a3d2b;line-height:1.2"><?php echo e(Auth::user()->name); ?></div>
                 <div style="font-size:.69rem;color:#4caf50">Nutricionista</div>
@@ -119,7 +132,7 @@
         <a href="<?php echo e(route('recetas.index')); ?>"           class="nav-link <?php echo e(request()->routeIs('recetas.*') ? 'active':''); ?>"><i class="bi bi-book"></i> Recetas</a>
         <a href="<?php echo e(route('ingredientes.index')); ?>"      class="nav-link <?php echo e(request()->routeIs('ingredientes.*') ? 'active':''); ?>"><i class="bi bi-egg-fried"></i> Ingredientes</a>
         <div class="sidebar-section">Comunicación</div>
-        <a href="<?php echo e(route('conversaciones.index')); ?>"    class="nav-link <?php echo e(request()->routeIs('conversaciones.*') ? 'active':''); ?>"><i class="bi bi-chat-dots"></i> Conversaciones</a>
+        <a href="<?php echo e(route('conversaciones.index')); ?>"    class="nav-link <?php echo e(request()->routeIs('conversaciones.*') || request()->routeIs('mensajes.*') ? 'active':''); ?>"><i class="bi bi-chat-dots"></i> Conversaciones</a>
         <div class="sidebar-section">Facturación</div>
         <a href="<?php echo e(route('facturas.index')); ?>"          class="nav-link <?php echo e(request()->routeIs('facturas.*') ? 'active':''); ?>"><i class="bi bi-receipt"></i> Facturas</a>
         <a href="<?php echo e(route('pagos.index')); ?>"              class="nav-link <?php echo e(request()->routeIs('pagos.*') ? 'active':''); ?>"><i class="bi bi-credit-card"></i> Pagos</a>
@@ -160,7 +173,7 @@
 </div>
 <?php endif; ?>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <?php echo $__env->yieldContent('scripts'); ?>
 </body>
 </html>

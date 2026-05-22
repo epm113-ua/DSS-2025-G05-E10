@@ -12,20 +12,19 @@ class ConversacionController extends Controller
 {
     public function index(Request $request)
     {
-        // Nutricionistas van directo al chat UI
+        // Nutricionistas: mostrar su lista de chats (sin redirigir automáticamente)
         if (Auth::user()->esNutricionista()) {
-            $nid   = $this->nutricionistaId();
-            $conv  = Conversacion::where('nutricionista_id', $nid)
-                        ->orderByDesc('updated_at')->first();
-            if ($conv) {
-                return redirect()->route('conversaciones.show', $conv);
-            }
-            // Sin conversaciones aún — mostrar chat vacío
-            $conversaciones = collect();
-            return view('conversaciones.chat-vacio', compact('conversaciones'));
+            $nid = $this->nutricionistaId();
+            $conversaciones = Conversacion::with(['paciente:id,nombre_completo,foto'])
+                ->select(['id','paciente_id','nutricionista_id','colaboracion','updated_at'])
+                ->where('nutricionista_id', $nid)
+                ->orderByDesc('updated_at')
+                ->get();
+
+            return view('conversaciones.chat-index', compact('conversaciones'));
         }
 
-        // Admin: tabla de conversaciones (sin porcentaje)
+        // Admin: tabla de conversaciones
         $query = Conversacion::with(['paciente','nutricionista'])->latest('updated_at');
 
         if ($request->filled('buscar')) {
@@ -87,14 +86,20 @@ class ConversacionController extends Controller
             ->orderBy('created_at')
             ->get();
 
-        // Sidebar: conversaciones filtradas, solo campos necesarios
-        $conversaciones = Conversacion::with(['paciente:id,nombre_completo,foto'])
-            ->select(['id','paciente_id','nutricionista_id','colaboracion','updated_at'])
-            ->when($this->nutricionistaId(), fn($q,$nid) => $q->where('nutricionista_id',$nid))
-            ->orderByDesc('updated_at')
-            ->get();
+        // Sidebar solo para nutricionista; admin no muestra sidebar de selección
+        $esNutricionista = Auth::user()->esNutricionista();
+        $conversaciones = collect();
 
-        return view('conversaciones.show', compact('conversacion','mensajes','conversaciones'));
+        if ($esNutricionista) {
+            $nid = $this->nutricionistaId();
+            $conversaciones = Conversacion::with(['paciente:id,nombre_completo,foto'])
+                ->select(['id','paciente_id','nutricionista_id','colaboracion','updated_at'])
+                ->where('nutricionista_id', $nid)
+                ->orderByDesc('updated_at')
+                ->get();
+        }
+
+        return view('conversaciones.show', compact('conversacion','mensajes','conversaciones','esNutricionista'));
     }
 
     public function edit(Conversacion $conversacion)

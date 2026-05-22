@@ -11,12 +11,28 @@
                 <form method="POST" action="<?php echo e(route('paciente.mi-perfil.update')); ?>" enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
 
-                    <?php if($paciente->foto): ?>
-                        <div class="text-center mb-3">
-                            <img src="<?php echo e(asset('storage/'.$paciente->foto)); ?>" class="rounded-circle"
-                                 style="width:80px;height:80px;object-fit:cover" alt="Foto">
-                        </div>
-                    <?php endif; ?>
+                    <div class="text-center mb-3">
+                        <?php if (isset($component)) { $__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.avatar','data' => ['foto' => $paciente->foto,'nombre' => Auth::user()->name,'size' => 80]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('avatar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['foto' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($paciente->foto),'nombre' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(Auth::user()->name),'size' => 80]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b)): ?>
+<?php $attributes = $__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b; ?>
+<?php unset($__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b)): ?>
+<?php $component = $__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b; ?>
+<?php unset($__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b); ?>
+<?php endif; ?>
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Foto de perfil</label>
@@ -120,16 +136,26 @@ unset($__errorArgs, $__bag); ?>
         <div class="card">
             <div class="card-header bg-success text-white fw-semibold"><i class="bi bi-person-badge me-1"></i>Nutricionista asignado/a</div>
             <div class="card-body text-center py-4">
-                <?php if($paciente->nutricionista?->foto): ?>
-                    <img src="<?php echo e(asset('storage/'.$paciente->nutricionista->foto)); ?>"
-                         class="rounded-circle mb-3" style="width:64px;height:64px;object-fit:cover">
-                <?php else: ?>
-                    <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center mb-3"
-                         style="width:64px;height:64px;font-size:1.5rem;font-weight:700">
-                        <?php echo e(strtoupper(substr($paciente->nutricionista?->nombre_completo ?? 'N',0,1))); ?>
-
-                    </div>
-                <?php endif; ?>
+                <?php if (isset($component)) { $__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.avatar','data' => ['foto' => $paciente->nutricionista?->foto,'nombre' => $paciente->nutricionista?->nombre_completo ?? 'N','size' => 64,'class' => 'mb-3']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('avatar'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['foto' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($paciente->nutricionista?->foto),'nombre' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($paciente->nutricionista?->nombre_completo ?? 'N'),'size' => 64,'class' => 'mb-3']); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b)): ?>
+<?php $attributes = $__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b; ?>
+<?php unset($__attributesOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b)): ?>
+<?php $component = $__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b; ?>
+<?php unset($__componentOriginal8ca5b43b8fff8bb34ab2ba4eb4bdd67b); ?>
+<?php endif; ?>
                 <h6 class="fw-bold mb-1"><?php echo e($paciente->nutricionista?->nombre_completo ?? '—'); ?></h6>
                 <p class="text-muted small mb-2"><?php echo e($paciente->nutricionista?->especialidad); ?></p>
                 <span class="badge bg-light text-muted border">

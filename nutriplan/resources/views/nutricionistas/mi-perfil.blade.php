@@ -11,19 +11,9 @@
                 <form method="POST" action="{{ route('nutricionista.mi-perfil.update') }}" enctype="multipart/form-data">
                     @csrf
 
-                    @if($nutricionista->foto)
-                        <div class="text-center mb-3">
-                            <img src="{{ asset('storage/'.$nutricionista->foto) }}?v={{ time() }}" class="rounded-circle"
-                                 style="width:80px;height:80px;object-fit:cover" alt="Foto">
-                        </div>
-                    @else
-                        <div class="text-center mb-3">
-                            <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center fw-bold mx-auto"
-                                 style="width:80px;height:80px;font-size:1.6rem">
-                                {{ strtoupper(substr($nutricionista->nombre_completo,0,1)) }}{{ strtoupper(substr(strstr($nutricionista->nombre_completo,' '),1,1)) }}
-                            </div>
-                        </div>
-                    @endif
+                    <div class="text-center mb-3">
+                        <x-avatar :foto="$nutricionista->foto" :nombre="$nutricionista->nombre_completo" :size="80" />
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Foto de perfil</label>
