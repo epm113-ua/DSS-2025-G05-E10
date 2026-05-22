@@ -36,11 +36,14 @@ class MensajeController extends Controller
             'enviado_en'      => now(),
         ]);
 
+        // Actualizar timestamp de la conversación para ordenar en sidebar
+        Conversacion::where('id', $validated['conversacion_id'])->touch();
+
         // Redirigir según rol
         if (Auth::user()->esPaciente()) {
             return redirect()->route('paciente.mis-mensajes')->with('exito','Mensaje enviado.');
         }
-        return redirect()->route('conversaciones.show',$validated['conversacion_id'])->with('exito','Mensaje enviado.');
+        return redirect()->route('conversaciones.show', $validated['conversacion_id'])->with('exito','Mensaje enviado.');
     }
 
     public function show(Mensaje $mensaje) { return view('mensajes.show', compact('mensaje')); }

@@ -14,8 +14,15 @@
 
                     @if($paciente->foto)
                         <div class="text-center mb-3">
-                            <img src="{{ asset('storage/'.$paciente->foto) }}" class="rounded-circle"
-                                 style="width:80px;height:80px;object-fit:cover" alt="Foto">
+                            <img src="{{ asset('storage/'.$paciente->foto) }}?v={{ time() }}" class="rounded-circle"
+                                 style="width:80px;height:80px;object-fit:cover" alt="Foto" id="fotoPreview">
+                        </div>
+                    @else
+                        <div class="text-center mb-3">
+                            <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center fw-bold"
+                                 style="width:80px;height:80px;font-size:1.6rem" id="fotoPreview">
+                                {{ strtoupper(substr($paciente->nombre_completo ?? Auth::user()->name,0,1)) }}{{ strtoupper(substr(strstr($paciente->nombre_completo ?? Auth::user()->name,' '),1,1)) }}
+                            </div>
                         </div>
                     @endif
 

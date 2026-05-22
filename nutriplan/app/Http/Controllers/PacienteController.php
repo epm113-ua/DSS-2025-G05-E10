@@ -13,7 +13,9 @@ class PacienteController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Paciente::with(['nutricionista','user'])->latest();
+        $query = Paciente::with(['nutricionista:id,nombre_completo','user:id,rol'])
+            ->select(['id','nombre_completo','ciudad','objetivos','foto','nutricionista_id','user_id'])
+            ->latest('nombre_completo');
         if ($nid = $this->nutricionistaId()) $query->where('nutricionista_id', $nid);
         if ($request->filled('buscar'))       $query->where('nombre_completo','like',"%{$request->buscar}%");
         if ($request->filled('ciudad'))       $query->where('ciudad','like',"%{$request->ciudad}%");
@@ -24,7 +26,7 @@ class PacienteController extends Controller
         $dir   = $request->dir === 'desc' ? 'desc' : 'asc';
 
         $pacientes      = $query->orderBy($orden,$dir)->paginate(15)->withQueryString();
-        $nutricionistas = auth()->user()->esAdmin() ? Nutricionista::orderBy('nombre_completo')->get() : collect();
+        $nutricionistas = auth()->user()->esAdmin() ? Nutricionista::select('id','nombre_completo')->orderBy('nombre_completo')->get() : collect();
         return view('pacientes.index', compact('pacientes','nutricionistas','orden','dir'));
     }
 

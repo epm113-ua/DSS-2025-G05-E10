@@ -8,7 +8,12 @@ use App\Http\Controllers\{CitaController,ConversacionController,DashboardControl
 use Illuminate\Support\Facades\Route;
 
 // ── Pública ──────────────────────────────────────────────
-Route::get('/',          [PublicoController::class,'inicio'])->name('inicio');
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('home');
+    }
+    return app(PublicoController::class)->inicio();
+})->name('inicio');
 Route::get('/sobre',     [PublicoController::class,'sobre'])->name('sobre');
 Route::get('/contacto',  [PublicoController::class,'contacto'])->name('contacto');
 Route::post('/contacto', [PublicoController::class,'enviarContacto'])->name('contacto.enviar');

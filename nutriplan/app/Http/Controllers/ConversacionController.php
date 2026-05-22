@@ -12,10 +12,21 @@ class ConversacionController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Conversacion::with(['paciente','nutricionista'])->latest('updated_at');
+        // Nutricionistas van directo al chat UI
+        if (Auth::user()->esNutricionista()) {
+            $nid   = $this->nutricionistaId();
+            $conv  = Conversacion::where('nutricionista_id', $nid)
+                        ->orderByDesc('updated_at')->first();
+            if ($conv) {
+                return redirect()->route('conversaciones.show', $conv);
+            }
+            // Sin conversaciones aún — mostrar chat vacío
+            $conversaciones = collect();
+            return view('conversaciones.chat-vacio', compact('conversaciones'));
+        }
 
-        if ($nid = $this->nutricionistaId())
-            $query->where('nutricionista_id', $nid);
+        // Admin: tabla de conversaciones (sin porcentaje)
+        $query = Conversacion::with(['paciente','nutricionista'])->latest('updated_at');
 
         if ($request->filled('buscar')) {
             $term = $request->buscar;
@@ -30,10 +41,8 @@ class ConversacionController extends Controller
         $orden = in_array($request->orden,['creado_en','colaboracion']) ? $request->orden : 'creado_en';
         $dir   = $request->dir === 'asc' ? 'asc' : 'desc';
 
-        $conversaciones = $query->orderBy($orden,$dir)->paginate(15)->withQueryString();
-        $pacientes = $this->nutricionistaId()
-            ? Paciente::where('nutricionista_id',$this->nutricionistaId())->orderBy('nombre_completo')->get()
-            : Paciente::orderBy('nombre_completo')->get();
+        $conversaciones = $query->orderBy($orden,$dir)->paginate(20)->withQueryString();
+        $pacientes = Paciente::orderBy('nombre_completo')->get();
 
         return view('conversaciones.index', compact('conversaciones','pacientes','orden','dir'));
     }
@@ -57,12 +66,14 @@ class ConversacionController extends Controller
         $validated = $request->validate([
             'paciente_id'      => ['required','exists:pacientes,id'],
             'nutricionista_id' => ['required','exists:nutricionistas,id'],
-            'cita_id'          => ['required','exists:citas,id'],
+            'cita_id'          => ['nullable','exists:citas,id'],
             'colaboracion'     => ['required','string','max:255'],
-            'porcentaje'       => ['required','integer','min:0','max:100'],
+            'porcentaje'       => ['nullable','integer','min:0','max:100'],
             'mensaje_resumen'  => ['nullable','string','max:500'],
-            'creado_en'        => ['required','date'],
+            'creado_en'        => ['nullable','date'],
         ]);
+        $validated['creado_en'] = $validated['creado_en'] ?? now();
+        $validated['porcentaje'] = $validated['porcentaje'] ?? 0;
         $c = Conversacion::create($validated);
         return redirect()->route('conversaciones.show',$c)->with('exito','Conversación creada.');
     }
@@ -70,13 +81,15 @@ class ConversacionController extends Controller
     public function show(Conversacion $conversacion)
     {
         $mensajes = $conversacion->mensajes()
-            ->with('autor')
+            ->with('autor:id,name')
+            ->select(['id','conversacion_id','autor_user_id','contenido','enviado_en','created_at'])
             ->orderBy('enviado_en')
             ->orderBy('created_at')
             ->get();
 
-        // Conversaciones del sidebar filtradas por nutricionista
-        $conversaciones = Conversacion::with('paciente')
+        // Sidebar: conversaciones filtradas, solo campos necesarios
+        $conversaciones = Conversacion::with(['paciente:id,nombre_completo,foto'])
+            ->select(['id','paciente_id','nutricionista_id','colaboracion','updated_at'])
             ->when($this->nutricionistaId(), fn($q,$nid) => $q->where('nutricionista_id',$nid))
             ->orderByDesc('updated_at')
             ->get();
@@ -101,11 +114,11 @@ class ConversacionController extends Controller
         $validated = $request->validate([
             'paciente_id'      => ['required','exists:pacientes,id'],
             'nutricionista_id' => ['required','exists:nutricionistas,id'],
-            'cita_id'          => ['required','exists:citas,id'],
+            'cita_id'          => ['nullable','exists:citas,id'],
             'colaboracion'     => ['required','string','max:255'],
-            'porcentaje'       => ['required','integer','min:0','max:100'],
+            'porcentaje'       => ['nullable','integer','min:0','max:100'],
             'mensaje_resumen'  => ['nullable','string','max:500'],
-            'creado_en'        => ['required','date'],
+            'creado_en'        => ['nullable','date'],
         ]);
         $conversacion->update($validated);
         return back()->with('exito','Conversación actualizada.');

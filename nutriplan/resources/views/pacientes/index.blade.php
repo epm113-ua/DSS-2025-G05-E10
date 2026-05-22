@@ -58,7 +58,12 @@
                 <tr>
                     <td class="fw-semibold">
                         @if($p->foto)
-                            <img src="{{ asset('storage/'.$p->foto) }}" class="rounded-circle me-2" style="width:30px;height:30px;object-fit:cover">
+                            <img src="{{ asset('storage/'.$p->foto) }}" class="rounded-circle me-2" style="width:30px;height:30px;object-fit:cover" alt="foto">
+                        @else
+                            <span class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center me-2 fw-bold flex-shrink-0"
+                                  style="width:30px;height:30px;font-size:.65rem;vertical-align:middle">
+                                {{ strtoupper(substr($p->nombre_completo,0,1)) }}{{ strtoupper(substr(strstr($p->nombre_completo,' '),1,1)) }}
+                            </span>
                         @endif
                         {{ $p->nombre_completo }}
                     </td>

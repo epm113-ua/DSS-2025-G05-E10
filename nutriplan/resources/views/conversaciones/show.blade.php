@@ -1,16 +1,19 @@
 @extends('layouts.app')
 @section('titulo','Chat')
-@section('breadcrumb','Mensajes › Chat')
 @section('styles')
 <style>
-    .chat-outer  { display:flex; height:calc(100vh - 160px); min-height:450px; background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.08); overflow:hidden; }
-    .chat-side   { width:220px; flex-shrink:0; border-right:1px solid #e2e8f0; display:flex; flex-direction:column; }
-    .chat-side-hdr { padding:.8rem 1rem; font-size:.8rem; font-weight:700; color:#2e7d52; text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid #e2e8f0; }
+    .chat-outer  { display:flex; height:calc(100vh - 120px); min-height:450px; background:#fff; border-radius:12px; box-shadow:0 1px 6px rgba(0,0,0,.08); overflow:hidden; }
+    .chat-side   { width:230px; flex-shrink:0; border-right:1px solid #e2e8f0; display:flex; flex-direction:column; }
+    .chat-side-hdr { padding:.8rem 1rem; font-size:.8rem; font-weight:700; color:#2e7d52; text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid #e2e8f0; flex-shrink:0; }
     .chat-side-list{ flex:1; overflow-y:auto; }
-    .chat-side-item{ display:block; padding:.6rem 1rem; text-decoration:none; color:#374151; border-bottom:1px solid #f5f5f5; font-size:.83rem; transition:background .12s; }
+    .chat-side-item{ display:flex; align-items:center; gap:.55rem; padding:.6rem .9rem; text-decoration:none; color:#374151; border-bottom:1px solid #f5f5f5; font-size:.83rem; transition:background .12s; }
     .chat-side-item:hover { background:#f0f9f4; color:#2e7d52; }
     .chat-side-item.active { background:#e8f5e9; color:#1a5c38; font-weight:600; }
     .chat-side-item .sub { font-size:.7rem; color:#94a3b8; display:block; margin-top:.1rem; }
+    .chat-side-avatar { width:32px; height:32px; border-radius:50%; flex-shrink:0; object-fit:cover; }
+    .chat-side-initials { width:32px; height:32px; border-radius:50%; background:#2e7d52; color:#fff; font-size:.68rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .search-box  { padding:.5rem; border-bottom:1px solid #f0f0f0; flex-shrink:0; }
+    .search-box input { font-size:.8rem; }
     .chat-main   { flex:1; display:flex; flex-direction:column; overflow:hidden; }
     .chat-hdr    { background:linear-gradient(135deg,#1a3d2b,#2e7d52); color:#fff; padding:.8rem 1.2rem; display:flex; align-items:center; gap:.7rem; flex-shrink:0; }
     .chat-msgs   { flex:1; overflow-y:auto; padding:1rem; background:#f8f9fa; }
@@ -19,15 +22,13 @@
     .msg-in      { background:#fff; border:1px solid #e2e8f0; border-bottom-left-radius:4px; }
     .msg-time    { font-size:.67rem; opacity:.6; display:block; margin-top:.15rem; text-align:right; }
     .chat-foot   { border-top:1px solid #e2e8f0; background:#fff; padding:.7rem 1rem; flex-shrink:0; }
-    .search-box  { padding:.5rem; border-bottom:1px solid #f0f0f0; }
-    .search-box input { font-size:.8rem; }
 </style>
 @endsection
 
 @section('contenido')
 <div class="chat-outer">
 
-    {{-- Sidebar — conversaciones del nutricionista --}}
+    {{-- Sidebar --}}
     <div class="chat-side">
         <div class="chat-side-hdr">Chats</div>
         <div class="search-box">
@@ -35,11 +36,22 @@
         </div>
         <div class="chat-side-list" id="chatList">
             @forelse($conversaciones as $c)
+            @php
+                $pac = $c->paciente;
+                $initials = $pac ? strtoupper(substr($pac->nombre_completo,0,1)).strtoupper(substr(strstr($pac->nombre_completo,' '),1,1)) : '?';
+            @endphp
             <a href="{{ route('conversaciones.show',$c) }}"
                class="chat-side-item {{ $c->id === $conversacion->id ? 'active' : '' }}"
-               data-nombre="{{ strtolower($c->paciente?->nombre_completo ?? '') }}">
-                <div>{{ $c->paciente?->nombre_completo ?? 'Paciente' }}</div>
-                <span class="sub">{{ $c->updated_at->diffForHumans() }}</span>
+               data-nombre="{{ strtolower($pac->nombre_completo ?? '') }}">
+                @if($pac && $pac->foto)
+                    <img src="{{ asset('storage/'.$pac->foto) }}" class="chat-side-avatar" alt="foto">
+                @else
+                    <div class="chat-side-initials">{{ $initials }}</div>
+                @endif
+                <div>
+                    <div>{{ $pac->nombre_completo ?? 'Paciente' }}</div>
+                    <span class="sub">{{ $c->updated_at->diffForHumans() }}</span>
+                </div>
             </a>
             @empty
             <div class="text-muted small p-3">Sin conversaciones.</div>
@@ -47,17 +59,30 @@
         </div>
     </div>
 
-    {{-- Panel principal del chat --}}
+    {{-- Panel principal --}}
     <div class="chat-main">
         {{-- Cabecera --}}
         <div class="chat-hdr">
-            <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
-                 style="width:38px;height:38px;font-size:.8rem">
-                {{ strtoupper(substr($conversacion->paciente?->nombre_completo ?? '?',0,2)) }}
-            </div>
+            @php
+                $pacHdr = $conversacion->paciente;
+                $hdrInitials = $pacHdr ? strtoupper(substr($pacHdr->nombre_completo,0,1)).strtoupper(substr(strstr($pacHdr->nombre_completo,' '),1,1)) : '?';
+            @endphp
+            @if($pacHdr && $pacHdr->foto)
+                <img src="{{ asset('storage/'.$pacHdr->foto) }}" class="rounded-circle flex-shrink-0" style="width:38px;height:38px;object-fit:cover" alt="foto">
+            @else
+                <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+                     style="width:38px;height:38px;font-size:.78rem">
+                    {{ $hdrInitials }}
+                </div>
+            @endif
             <div>
-                <div class="fw-semibold">{{ $conversacion->paciente?->nombre_completo ?? 'Paciente' }}</div>
-                <div style="font-size:.75rem;opacity:.8">{{ $conversacion->colaboracion ?? 'Conversación directa' }}</div>
+                <div class="fw-semibold">{{ $pacHdr->nombre_completo ?? 'Paciente' }}</div>
+                <div style="font-size:.75rem;opacity:.8">
+                    @if($conversacion->nutricionista)
+                        {{ $conversacion->nutricionista->nombre_completo }} — 
+                    @endif
+                    {{ $conversacion->colaboracion ?? 'Conversación directa' }}
+                </div>
             </div>
         </div>
 
@@ -84,7 +109,7 @@
             @endforelse
         </div>
 
-        {{-- Input — nutricionista usa mensajes.store (tiene acceso) --}}
+        {{-- Input --}}
         <div class="chat-foot">
             <form method="POST" action="{{ route('mensajes.store') }}" class="d-flex gap-2">
                 @csrf
@@ -102,11 +127,9 @@
 
 @section('scripts')
 <script>
-    // Auto-scroll
     const msgs = document.getElementById('chatMsgs');
     if (msgs) msgs.scrollTop = msgs.scrollHeight;
 
-    // Filtro sidebar
     document.getElementById('buscarChat').addEventListener('input', function(){
         const q = this.value.toLowerCase();
         document.querySelectorAll('.chat-side-item[data-nombre]').forEach(el => {
